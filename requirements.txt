@@ -2,3 +2,7 @@ numpy
 pandas
 certifi
 pymongo
+opencv-python
+scipy
+matplotlib
+PIL
