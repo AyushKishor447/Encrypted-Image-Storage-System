@@ -32,14 +32,12 @@ export async function uploadImage(file: File): Promise<EncryptionResponse> {
   return response.json();
 }
 
-export async function deleteImage(filename: string): Promise<void> {
+export async function deleteImage(imageId: string): Promise<void> {
   const token = localStorage.getItem('token');
-  const baseFilename = filename.replace(/_preview$/, '').replace(/_encrypted$/, '');
-  const url = `${API_BASE}/api/delete/${baseFilename}`;
+  const url = `${API_BASE}/api/delete/${imageId}`;
   
   console.log('Sending delete request:', {
-    originalFilename: filename,
-    baseFilename,
+    imageId,
     url
   });
   
@@ -62,7 +60,7 @@ export async function deleteImage(filename: string): Promise<void> {
       status: response.status,
       statusText: response.statusText,
       responseText,
-      filename,
+      imageId,
       url
     });
     throw new Error(responseText || `Failed to delete image: ${response.status} ${response.statusText}`);

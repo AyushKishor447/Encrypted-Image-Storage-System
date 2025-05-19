@@ -120,8 +120,7 @@ export default function ImageList({ images, onDelete }: ImageListProps) {
 
                   try {
                     setIsDeleting(image.id);
-                    const baseFilename = image.name.replace(/_preview$/, '').replace(/_encrypted$/, '');
-                    await deleteImage(baseFilename);
+                    await deleteImage(image.id);
                     setShowDeleteConfirm(null);
                     onDelete?.();
                   } catch (error) {

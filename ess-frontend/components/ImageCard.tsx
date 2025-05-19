@@ -105,8 +105,8 @@ export default function ImageCard({ item, onDelete, onStar, folders = [] }: Imag
         preview: item.preview
       });
 
-      // Pass the clean filename to deleteImage
-      await deleteImage(baseFilename);
+      // Pass the image id to deleteImage
+      await deleteImage(item.id);
       console.log('Delete operation completed successfully');
       setShowDeleteConfirm(false);
       onDelete?.();
