@@ -1,0 +1,11 @@
+{
+  "users": [
+    {
+      "id": "a7b59c12-a06e-4de6-a074-6ef7ba7e3d9e",
+      "email": "ayushkishor.447@gmail.com",
+      "name": "Ayush Kishor",
+      "hashed_password": "$2b$12$kfY7.rOh8xvu7jagoPYpNut/sXn78rMXxC6cLgSkksTQzGy3l9iCi",
+      "created_at": "2025-05-19T18:55:11.069126"
+    }
+  ]
+}

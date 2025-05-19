@@ -3,7 +3,12 @@ import { ImageItem, EncryptionResponse } from './types';
 const API_BASE = 'http://localhost:8000';
 
 export async function listImages(): Promise<ImageItem[]> {
-  const response = await fetch(`${API_BASE}/api/items`);
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${API_BASE}/api/items`, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
   if (!response.ok) throw new Error('Failed to fetch images');
   const items = await response.json();
   console.log('Fetched items:', items);
@@ -11,12 +16,16 @@ export async function listImages(): Promise<ImageItem[]> {
 }
 
 export async function uploadImage(file: File): Promise<EncryptionResponse> {
+  const token = localStorage.getItem('token');
   const formData = new FormData();
   formData.append('file', file);
 
   const response = await fetch(`${API_BASE}/api/encrypt`, {
     method: 'POST',
     body: formData,
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
   });
 
   if (!response.ok) throw new Error('Failed to upload image');

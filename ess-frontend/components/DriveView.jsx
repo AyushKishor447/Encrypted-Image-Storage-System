@@ -23,7 +23,12 @@ export default function DriveView() {
   const fetchItems = async () => {
     try {
       setIsLoading(true);
-      const res = await axios.get("http://localhost:8000/api/items");
+      const token = localStorage.getItem('token');
+      const res = await axios.get("http://localhost:8000/api/items", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setItems(res.data);
     } catch (err) {
       console.error("Failed to fetch items", err);
@@ -40,7 +45,12 @@ export default function DriveView() {
     formData.append("file", file);
 
     try {
-      await axios.post("http://localhost:8000/api/encrypt", formData);
+      const token = localStorage.getItem('token');
+      await axios.post("http://localhost:8000/api/encrypt", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       fetchItems(); // Refresh the list after upload
     } catch (err) {
       console.error("Upload failed", err);

@@ -1,4 +1,14 @@
-<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="40" height="40" rx="8" fill="#4F46E5"/>
-  <path d="M20 12C17.2386 12 15 14.2386 15 17V19H14C12.8954 19 12 19.8954 12 21V27C12 28.1046 12.8954 29 14 29H26C27.1046 29 28 28.1046 28 27V21C28 19.8954 27.1046 19 26 19H25V17C25 14.2386 22.7614 12 20 12ZM21 19H19V17C19 16.4477 19.4477 16 20 16C20.5523 16 21 16.4477 21 17V19Z" fill="white"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="24" cy="24" r="24" fill="#2563EB"/>
+  
+  <!-- Shield Shape -->
+  <path d="M24 8L32 12V20C32 26.6274 28.6274 32 24 32C19.3726 32 16 26.6274 16 20V12L24 8Z" fill="white"/>
+  
+  <!-- Lock Body -->
+  <rect x="20" y="18" width="8" height="6" rx="2" fill="#2563EB"/>
+  
+  <!-- Lock Top -->
+  <path d="M22 18V16C22 14.3431 23.3431 13 25 13H27C28.6569 13 30 14.3431 30 16V18" stroke="#2563EB" stroke-width="2"/>
 </svg> 

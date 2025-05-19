@@ -1,14 +1,19 @@
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Depends
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from pydantic import BaseModel, EmailStr
 from fastapi.staticfiles import StaticFiles
 from PIL import Image
 import numpy as np
 import os
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List, Optional
+# import jwt
+from jose import jwt
+from passlib.context import CryptContext
+import uuid
 
 from api.encrypt import encrypt_img
 from api.decrypt import decrypt_img
@@ -40,7 +45,36 @@ STORAGE_DECRYPTED = "storage/decrypted"
 for folder in [TMP_UPLOAD, STORAGE_ENC_ARRAY, STORAGE_ENC_VIEW, STORAGE_PREVIEW, STORAGE_DECRYPTED]:
     os.makedirs(folder, exist_ok=True)
 
+# === Authentication Setup ===
+SECRET_KEY = "your-secret-key-here"  # Change this in production!
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 # === API MODELS ===
+class UserBase(BaseModel):
+    email: EmailStr
+    name: str
+
+class UserCreate(UserBase):
+    password: str
+
+class User(UserBase):
+    id: str
+    created_at: str
+
+class UserInDB(User):
+    hashed_password: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    email: Optional[str] = None
+
 class Item(BaseModel):
     id: str
     name: str
@@ -50,6 +84,7 @@ class Item(BaseModel):
     starred: bool = False
     last_modified: str
     parent_folder: Optional[str] = None
+    user_id: str
 
 class Folder(BaseModel):
     id: str
@@ -57,6 +92,7 @@ class Folder(BaseModel):
     type: str = "folder"
     parent_folder: Optional[str] = None
     created_at: str
+    user_id: str
 
 # File to store metadata
 METADATA_FILE = "storage/metadata.json"
@@ -106,9 +142,131 @@ def save_metadata(metadata):
 metadata = load_metadata()
 save_metadata(metadata)
 
+# === User Management Functions ===
+def get_users():
+    if os.path.exists("storage/users.json"):
+        with open("storage/users.json", "r") as f:
+            return json.load(f)
+    return {"users": []}
+
+def save_users(users_data):
+    os.makedirs("storage", exist_ok=True)
+    with open("storage/users.json", "w") as f:
+        json.dump(users_data, f, indent=2)
+
+def get_user_by_email(email: str):
+    users_data = get_users()
+    for user in users_data["users"]:
+        if user["email"] == email:
+            return user
+    return None
+
+def create_user(user: UserCreate):
+    users_data = get_users()
+    
+    # Check if user already exists
+    if get_user_by_email(user.email):
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    # Create new user
+    user_id = str(uuid.uuid4())
+    hashed_password = pwd_context.hash(user.password)
+    
+    new_user = {
+        "id": user_id,
+        "email": user.email,
+        "name": user.name,
+        "hashed_password": hashed_password,
+        "created_at": datetime.now().isoformat()
+    }
+    
+    users_data["users"].append(new_user)
+    save_users(users_data)
+    
+    return {
+        "id": user_id,
+        "email": user.email,
+        "name": user.name,
+        "created_at": new_user["created_at"]
+    }
+
+def verify_password(plain_password: str, hashed_password: str):
+    return pwd_context.verify(plain_password, hashed_password)
+
+def authenticate_user(email: str, password: str):
+    user = get_user_by_email(email)
+    if not user:
+        return False
+    if not verify_password(password, user["hashed_password"]):
+        return False
+    return user
+
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(
+        status_code=401,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            raise credentials_exception
+        token_data = TokenData(email=email)
+    except jwt.JWTError:
+        raise credentials_exception
+    user = get_user_by_email(email=token_data.email)
+    if user is None:
+        raise credentials_exception
+    return user
+
+# === Authentication Endpoints ===
+@app.post("/api/auth/signup", response_model=User)
+async def signup(user: UserCreate):
+    return create_user(user)
+
+@app.post("/api/auth/login", response_model=Token)
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    user = authenticate_user(form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user["email"]}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+# === Protected Routes ===
+@app.get("/api/users/me", response_model=User)
+async def read_users_me(current_user: dict = Depends(get_current_user)):
+    return {
+        "id": current_user["id"],
+        "email": current_user["email"],
+        "name": current_user["name"],
+        "created_at": current_user["created_at"]
+    }
+
 # === FOLDER ENDPOINTS ===
 @app.post("/api/folders")
-async def create_folder(name: str = Form(...), parent_folder: Optional[str] = Form(None)):
+async def create_folder(
+    name: str = Form(...),
+    parent_folder: Optional[str] = Form(None),
+    current_user: dict = Depends(get_current_user)
+):
     print(f"Received folder creation request - Name: {name}, Parent: {parent_folder}")
     try:
         metadata = load_metadata()
@@ -118,7 +276,7 @@ async def create_folder(name: str = Form(...), parent_folder: Optional[str] = Fo
         print(f"Generated folder ID: {folder_id}")
         
         # Check if folder already exists
-        if any(f["id"] == folder_id for f in metadata["folders"]):
+        if any(f["id"] == folder_id and f["user_id"] == current_user["id"] for f in metadata["folders"]):
             print(f"Folder {folder_id} already exists")
             raise HTTPException(status_code=400, detail="Folder already exists")
         
@@ -128,7 +286,8 @@ async def create_folder(name: str = Form(...), parent_folder: Optional[str] = Fo
             "name": name,
             "type": "folder",
             "parent_folder": parent_folder,
-            "created_at": datetime.now().isoformat()
+            "created_at": datetime.now().isoformat(),
+            "user_id": current_user["id"]
         }
         print(f"Created new folder object: {new_folder}")
         
@@ -146,12 +305,13 @@ async def create_folder(name: str = Form(...), parent_folder: Optional[str] = Fo
         raise HTTPException(status_code=500, detail=f"Failed to create folder: {str(e)}")
 
 @app.get("/api/folders")
-async def list_folders():
+async def list_folders(current_user: dict = Depends(get_current_user)):
     print("Received request to list folders")
     try:
         metadata = load_metadata()
-        print(f"Current folders: {metadata['folders']}")
-        return metadata["folders"]
+        user_folders = [f for f in metadata["folders"] if f["user_id"] == current_user["id"]]
+        print(f"Current folders: {user_folders}")
+        return user_folders
     except Exception as e:
         print(f"Error listing folders: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to list folders: {str(e)}")

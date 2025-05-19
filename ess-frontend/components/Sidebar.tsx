@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Star, Clock, FolderIcon, Plus, ChevronRight, ChevronDown } from 'lucide-react';
 import { Modal } from './Modal';
+import axios from 'axios';
 
 interface Folder {
   id: string;
@@ -26,27 +27,42 @@ export function Sidebar({ currentFolder, onFolderSelect, onViewStarred, onViewRe
   const [showNewFolderDialog, setShowNewFolderDialog] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
+  const [token, setToken] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    fetchFolders();
+    if (typeof window !== 'undefined') {
+      setIsClient(true);
+      const t = localStorage.getItem('token');
+      setToken(t);
+    }
   }, []);
 
-  const fetchFolders = async () => {
+  useEffect(() => {
+    if (isClient && token) {
+      console.log('Token in Sidebar:', token);
+      fetchFolders(token);
+    }
+  }, [isClient, token]);
+
+  const fetchFolders = async (token: string) => {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await fetch('http://localhost:8000/api/folders');
-      if (!response.ok) throw new Error('Failed to fetch folders');
-      
-      const data = await response.json();
+      console.log('About to fetch folders with token:', token);
+      const res = await axios.get('http://localhost:8000/api/folders', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log('Fetched folders:', res.data);
       // Ensure we're working with an array of valid folder objects
-      const validFolders = Array.isArray(data) ? data.filter((folder): folder is Folder => {
+      const validFolders = Array.isArray(res.data) ? res.data.filter((folder): folder is Folder => {
         return folder &&
           typeof folder === 'object' &&
           typeof folder.id === 'string' &&
           typeof folder.name === 'string';
       }) : [];
-      
       setFolders(validFolders);
     } catch (error) {
       console.error('Failed to fetch folders:', error);
@@ -97,7 +113,7 @@ export function Sidebar({ currentFolder, onFolderSelect, onViewStarred, onViewRe
       setNewFolderName('');
       
       // Refresh the folders list
-      await fetchFolders();
+      await fetchFolders(token);
     } catch (error) {
       console.error('Failed to create folder:', error);
       alert(error instanceof Error ? error.message : 'Failed to create folder');
@@ -151,6 +167,11 @@ export function Sidebar({ currentFolder, onFolderSelect, onViewStarred, onViewRe
       </div>
     ));
   };
+
+  // Only render sidebar if token is present and we're on the client
+  if (!isClient || !token) {
+    return null;
+  }
 
   return (
     <div className="w-60 h-screen bg-white border-r border-gray-200 flex-shrink-0 fixed left-0 top-0 pt-16">

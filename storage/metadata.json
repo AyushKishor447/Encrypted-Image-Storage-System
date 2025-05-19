@@ -8,21 +8,24 @@
       "name": "ayush",
       "type": "folder",
       "parent_folder": null,
-      "created_at": "2025-05-18T17:04:34.356814"
+      "created_at": "2025-05-18T17:04:34.356814",
+      "user_id": "a7b59c12-a06e-4de6-a074-6ef7ba7e3d9e"
     },
     {
       "id": "x",
       "name": "x",
       "type": "folder",
       "parent_folder": "ayush",
-      "created_at": "2025-05-18T17:04:53.709686"
+      "created_at": "2025-05-18T17:04:53.709686",
+      "user_id": "a7b59c12-a06e-4de6-a074-6ef7ba7e3d9e"
     },
     {
       "id": "y",
       "name": "y",
       "type": "folder",
       "parent_folder": null,
-      "created_at": "2025-05-18T17:05:11.406616"
+      "created_at": "2025-05-18T17:05:11.406616",
+      "user_id": "a7b59c12-a06e-4de6-a074-6ef7ba7e3d9e"
     }
   ]
 }

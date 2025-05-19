@@ -22,21 +22,29 @@ export default function Home() {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [contentView, setContentView] = useState<ContentView>('all');
   const [currentFolder, setCurrentFolder] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
   const [folders, setFolders] = useState<Array<{id: string, name: string}>>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [ready, setReady] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    setMounted(true);
+    if (typeof window !== 'undefined') {
+      setToken(localStorage.getItem('token'));
+      setReady(true);
+    }
   }, []);
 
   const loadImages = async () => {
+    if (!token) return;
     try {
       setIsLoading(true);
       let url = 'http://localhost:8000/api';
-      
       // Load folders first
-      const foldersResponse = await fetch('http://localhost:8000/api/folders');
+      const foldersResponse = await fetch('http://localhost:8000/api/folders', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
       if (!foldersResponse.ok) throw new Error('Failed to fetch folders');
       const foldersData = await foldersResponse.json();
       setFolders(foldersData);
@@ -64,7 +72,11 @@ export default function Home() {
         }
       }
 
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
       if (!response.ok) throw new Error('Failed to fetch images');
       const items = await response.json();
       setImages(items);
@@ -77,8 +89,11 @@ export default function Home() {
   };
 
   useEffect(() => {
-    loadImages();
-  }, [contentView, currentFolder, searchQuery]);
+    if (ready && token) {
+      loadImages();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, token, contentView, currentFolder, searchQuery]);
 
   const handleFolderSelect = (folderId: string | null) => {
     setCurrentFolder(folderId);
@@ -96,9 +111,13 @@ export default function Home() {
   };
 
   const handleStarItem = async (itemId: string, isStarred: boolean) => {
+    if (!token) return;
     try {
       const response = await fetch(`http://localhost:8000/api/items/${itemId}/${isStarred ? 'unstar' : 'star'}`, {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
       
       if (!response.ok) throw new Error('Failed to update star status');
@@ -115,8 +134,8 @@ export default function Home() {
     setSearchQuery(query);
   };
 
-  if (!mounted) {
-    return null; // Prevent hydration issues by not rendering until client-side
+  if (!ready) {
+    return null; // Only render after client-side mount and token is available
   }
 
   const getViewTitle = () => {
@@ -203,8 +222,6 @@ export default function Home() {
             <ImageList
               images={images}
               onDelete={loadImages}
-              onStar={(imageId, isStarred) => handleStarItem(imageId, isStarred)}
-              folders={folders}
             />
           )}
         </div>

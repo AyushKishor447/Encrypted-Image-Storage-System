@@ -1,5 +1,6 @@
 import React from 'react';
 import { SearchBar } from './SearchBar';
+import { useRouter } from 'next/navigation';
 
 interface HeaderProps {
   viewMode: 'grid' | 'list';
@@ -10,6 +11,17 @@ interface HeaderProps {
 }
 
 export function Header({ viewMode, onViewModeChange, onSearch, currentFolder, searchQuery }: HeaderProps) {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    // Remove token from localStorage
+    localStorage.removeItem('token');
+    // Remove token from cookies
+    document.cookie = 'token=; Max-Age=0; path=/;';
+    // Redirect to login page
+    router.push('/login');
+  };
+
   return (
     <header className="h-16 bg-white border-b border-gray-200 fixed top-0 left-0 right-0 z-10">
       <div className="flex items-center h-full px-6">
@@ -42,6 +54,12 @@ export function Header({ viewMode, onViewModeChange, onSearch, currentFolder, se
             <svg className="w-6 h-6 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
+          </button>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+          >
+            Logout
           </button>
         </div>
       </div>
