@@ -40,15 +40,17 @@ export default function Home() {
     try {
       setIsLoading(true);
       let url = 'http://localhost:8000/api/items';
-      if (contentView === 'starred') {
+      if (searchQuery && contentView !== 'starred' && contentView !== 'recent') {
+        url = 'http://localhost:8000/api/search?query=' + encodeURIComponent(searchQuery);
+        if (contentView === 'folder' && currentFolder) {
+          url += `&folder=${encodeURIComponent(currentFolder)}`;
+        }
+      } else if (contentView === 'starred') {
         url = 'http://localhost:8000/api/items/starred';
       } else if (contentView === 'recent') {
         url = 'http://localhost:8000/api/items/recent';
       } else if (contentView === 'folder' && currentFolder) {
-        url += `?folder=${currentFolder}`;
-      }
-      if (searchQuery && contentView !== 'starred' && contentView !== 'recent') {
-        url += (url.includes('?') ? '&' : '?') + `search=${searchQuery}`;
+        url += `?folder=${encodeURIComponent(currentFolder)}`;
       }
 
       const response = await fetch(url, {
