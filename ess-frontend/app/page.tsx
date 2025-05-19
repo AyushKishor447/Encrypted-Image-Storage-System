@@ -36,40 +36,19 @@ export default function Home() {
 
   const loadImages = async () => {
     if (!token) return;
+    
     try {
       setIsLoading(true);
-      let url = 'http://localhost:8000/api';
-      // Load folders first
-      const foldersResponse = await fetch('http://localhost:8000/api/folders', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      if (!foldersResponse.ok) throw new Error('Failed to fetch folders');
-      const foldersData = await foldersResponse.json();
-      setFolders(foldersData);
-
-      // If we have a search query, use the search endpoint
-      if (searchQuery) {
-        url += `/search?query=${encodeURIComponent(searchQuery)}`;
-        if (contentView === 'folder' && currentFolder) {
-          url += `&folder=${encodeURIComponent(currentFolder)}`;
-        }
-      } else {
-        // Otherwise use the regular endpoints
-        switch (contentView) {
-          case 'starred':
-            url += '/items/starred';
-            break;
-          case 'recent':
-            url += '/items/recent';
-            break;
-          case 'folder':
-            url += `/items?folder=${currentFolder}`;
-            break;
-          default:
-            url += '/items';
-        }
+      let url = 'http://localhost:8000/api/items';
+      if (contentView === 'starred') {
+        url = 'http://localhost:8000/api/items/starred';
+      } else if (contentView === 'recent') {
+        url = 'http://localhost:8000/api/items/recent';
+      } else if (contentView === 'folder' && currentFolder) {
+        url += `?folder=${currentFolder}`;
+      }
+      if (searchQuery && contentView !== 'starred' && contentView !== 'recent') {
+        url += (url.includes('?') ? '&' : '?') + `search=${searchQuery}`;
       }
 
       const response = await fetch(url, {
@@ -77,23 +56,26 @@ export default function Home() {
           'Authorization': `Bearer ${token}`,
         },
       });
-      if (!response.ok) throw new Error('Failed to fetch images');
-      const items = await response.json();
-      setImages(items);
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch images');
+      }
+
+      const data = await response.json();
+      setImages(data);
     } catch (error) {
       console.error('Failed to load images:', error);
-      alert('Failed to load images');
+      setImages([]);
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (ready && token) {
+    if (token) {
       loadImages();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, token, contentView, currentFolder, searchQuery]);
+  }, [token, contentView, currentFolder, searchQuery]);
 
   const handleFolderSelect = (folderId: string | null) => {
     setCurrentFolder(folderId);

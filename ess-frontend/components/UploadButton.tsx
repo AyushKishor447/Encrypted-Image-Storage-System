@@ -14,6 +14,7 @@ export function UploadButton({ onUploadComplete, currentFolder }: UploadButtonPr
   const [isUploading, setIsUploading] = useState(false);
   const [showKeyDialog, setShowKeyDialog] = useState(false);
   const [uploadedKeys, setUploadedKeys] = useState<UploadedKey[]>([]);
+  const [currentKeyIndex, setCurrentKeyIndex] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,6 +24,11 @@ export function UploadButton({ onUploadComplete, currentFolder }: UploadButtonPr
     setIsUploading(true);
     const newKeys: UploadedKey[] = [];
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
       for (const file of files) {
         const formData = new FormData();
         formData.append('file', file);
@@ -30,11 +36,16 @@ export function UploadButton({ onUploadComplete, currentFolder }: UploadButtonPr
         // Upload and encrypt the file
         const response = await fetch('http://localhost:8000/api/encrypt', {
           method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
           body: formData,
         });
 
         if (!response.ok) {
-          throw new Error('Upload failed');
+          const errorText = await response.text();
+          console.error('Upload failed:', errorText);
+          throw new Error(errorText || 'Upload failed');
         }
 
         const result = await response.json();
@@ -49,6 +60,9 @@ export function UploadButton({ onUploadComplete, currentFolder }: UploadButtonPr
             `http://localhost:8000/api/items/${result.preview_id}/move`,
             {
               method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+              },
               body: moveFormData,
             }
           );
@@ -59,13 +73,18 @@ export function UploadButton({ onUploadComplete, currentFolder }: UploadButtonPr
         }
       }
       setUploadedKeys(newKeys);
+      setCurrentKeyIndex(0);
       setShowKeyDialog(true);
       onUploadComplete();
     } catch (error) {
       console.error('Upload failed:', error);
-      alert('Failed to upload image');
+      alert(error instanceof Error ? error.message : 'Failed to upload image');
     } finally {
       setIsUploading(false);
+      // Reset the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -111,39 +130,41 @@ export function UploadButton({ onUploadComplete, currentFolder }: UploadButtonPr
         </label>
       </div>
 
-      {showKeyDialog && (
+      {showKeyDialog && uploadedKeys.length > 0 && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[99999]">
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h3 className="text-lg font-medium mb-4">Save Your Encryption Keys</h3>
+            <h3 className="text-lg font-medium mb-4">Save Your Encryption Key</h3>
             <p className="text-gray-600 mb-4">
-              Please save these encryption keys. You will need them to decrypt the images later:
+              Please save this encryption key. You will need it to decrypt the image later:
             </p>
             <div className="space-y-4 mb-4 max-h-60 overflow-y-auto">
-              {uploadedKeys.map(({ filename, key }) => (
-                <div key={filename} className="bg-gray-100 p-3 rounded flex flex-col gap-1">
-                  <span className="font-semibold text-gray-700 text-sm">{filename}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="break-all font-mono text-xs">{key}</span>
-                  </div>
+              <div className="bg-gray-100 p-3 rounded flex flex-col gap-1">
+                <span className="font-semibold text-gray-700 text-sm">{uploadedKeys[currentKeyIndex].filename}</span>
+                <div className="flex items-center gap-2">
+                  <span className="break-all font-mono text-xs">{uploadedKeys[currentKeyIndex].key}</span>
                 </div>
-              ))}
+              </div>
             </div>
             <div className="flex justify-end gap-2">
               <button
-                onClick={() => handleCopy(uploadedKeys[uploadedKeys.length-1]?.key || '')}
+                onClick={() => handleCopy(uploadedKeys[currentKeyIndex]?.key || '')}
                 className="px-4 py-2 bg-white text-black border border-gray-300 rounded hover:bg-gray-100"
-                title="Copy last key to clipboard"
+                title="Copy key to clipboard"
               >
                 Copy Key
               </button>
               <button
                 onClick={() => {
-                  setShowKeyDialog(false);
-                  setUploadedKeys([]);
+                  if (currentKeyIndex < uploadedKeys.length - 1) {
+                    setCurrentKeyIndex(currentKeyIndex + 1);
+                  } else {
+                    setShowKeyDialog(false);
+                    setUploadedKeys([]);
+                  }
                 }}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
               >
-                I've Saved the Keys
+                I've Saved the Key
               </button>
             </div>
           </div>

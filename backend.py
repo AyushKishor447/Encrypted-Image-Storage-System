@@ -379,16 +379,17 @@ def list_items(folder: Optional[str] = None, current_user: dict = Depends(get_cu
     return items
 
 @app.get("/api/items/starred")
-def list_starred_items():
+def list_starred_items(current_user: dict = Depends(get_current_user)):
     metadata = load_metadata()
-    all_items = list_items()
-    return [item for item in all_items if item.id in metadata["starred"]]
+    all_items = list_items(current_user=current_user)
+    return [item for item in all_items if item.id in metadata["starred"] and item.user_id == current_user["id"]]
 
 @app.get("/api/items/recent")
-def list_recent_items(limit: int = 5):
-    all_items = list_items()
-    # Sort by last_modified and return the most recent items
-    return sorted(all_items, key=lambda x: x.last_modified, reverse=True)[:limit]
+def list_recent_items(limit: int = 5, current_user: dict = Depends(get_current_user)):
+    all_items = list_items(current_user=current_user)
+    # Sort by last_modified and return the most recent items for the current user
+    user_items = [item for item in all_items if item.user_id == current_user["id"]]
+    return sorted(user_items, key=lambda x: x.last_modified, reverse=True)[:limit]
 
 # === PREVIEW ENDPOINT ===
 @app.get("/api/preview/{item_id}")

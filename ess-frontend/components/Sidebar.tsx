@@ -77,6 +77,11 @@ export function Sidebar({ currentFolder, onFolderSelect, onViewStarred, onViewRe
     if (!newFolderName.trim()) return;
 
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
       console.log('Creating folder:', newFolderName);
       const formData = new FormData();
       formData.append('name', newFolderName);
@@ -84,19 +89,14 @@ export function Sidebar({ currentFolder, onFolderSelect, onViewStarred, onViewRe
         formData.append('parent_folder', currentFolder);
       }
 
-      const token = localStorage.getItem('token');
-      console.log('Creating folder with token:', token);
       const response = await fetch('http://localhost:8000/api/folders', {
         method: 'POST',
-        body: formData,
         headers: {
-          'Accept': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
+        body: formData,
       });
 
-      console.log('Response status:', response.status);
-      
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Error response:', errorText);

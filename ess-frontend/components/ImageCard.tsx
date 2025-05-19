@@ -127,6 +127,11 @@ export default function ImageCard({ item, onDelete, onStar, folders = [] }: Imag
 
   const handleMove = async (folderId: string | null) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
       const formData = new FormData();
       if (folderId) {
         formData.append('folder_id', folderId);
@@ -134,6 +139,9 @@ export default function ImageCard({ item, onDelete, onStar, folders = [] }: Imag
 
       const response = await fetch(`http://localhost:8000/api/items/${item.id}/move`, {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
         body: formData,
       });
 
