@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.env
+main.py
+lena_color.tiff
+test_api.py
