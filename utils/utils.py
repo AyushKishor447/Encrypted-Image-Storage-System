@@ -18,7 +18,10 @@ import os
 def save_np_as_image(np_array: np.ndarray, output_path: str, mode:str = "TIFF"):
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     image = Image.fromarray(np_array.astype('uint8'))
-    image.save(output_path,format=mode)
+    if mode.upper() == "TIFF":
+        image.save(output_path, format="TIFF", compression="tiff_lzw")
+    else:
+        image.save(output_path, format=mode)
     print(f"✅ Image saved to {output_path}")
 
 

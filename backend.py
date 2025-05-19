@@ -16,6 +16,7 @@ from passlib.context import CryptContext
 import uuid
 from pymongo import MongoClient
 from dotenv import load_dotenv
+from bson import ObjectId
 
 from api.encrypt import encrypt_img
 from api.decrypt import decrypt_img
@@ -33,15 +34,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Serve storage folder
-app.mount("/storage", StaticFiles(directory="storage"), name="storage")
+# Get absolute paths for storage directories
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+STORAGE_DIR = os.path.join(BASE_DIR, "storage")
+STORAGE_ENC_VIEW_DIR = os.path.join(STORAGE_DIR, "encrypted_view")
+STORAGE_PREVIEW_DIR = os.path.join(STORAGE_DIR, "preview")
+STORAGE_DECRYPTED_DIR = os.path.join(STORAGE_DIR, "decrypted")
+
+# Serve storage folders
+app.mount("/storage", StaticFiles(directory=STORAGE_DIR), name="storage")
 
 # Folder paths
-TMP_UPLOAD = "temp_uploads"
-STORAGE_ENC_ARRAY = "storage/encrypted"
-STORAGE_ENC_VIEW = "storage/encrypted_view"
-STORAGE_PREVIEW = "storage/preview"
-STORAGE_DECRYPTED = "storage/decrypted"
+TMP_UPLOAD = os.path.join(BASE_DIR, "temp_uploads")
+STORAGE_ENC_ARRAY = os.path.join(STORAGE_DIR, "encrypted")
+STORAGE_ENC_VIEW = STORAGE_ENC_VIEW_DIR
+STORAGE_PREVIEW = STORAGE_PREVIEW_DIR
+STORAGE_DECRYPTED = STORAGE_DECRYPTED_DIR
 
 # Create folders if not exist
 for folder in [TMP_UPLOAD, STORAGE_ENC_ARRAY, STORAGE_ENC_VIEW, STORAGE_PREVIEW, STORAGE_DECRYPTED]:
@@ -291,13 +299,16 @@ async def list_folders(current_user: dict = Depends(get_current_user)):
 # === ENCRYPTION ===
 @app.post("/api/encrypt", response_class=JSONResponse)
 async def encrypt_endpoint(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
+    print(f"Starting encryption for file: {file.filename}")
     temp_path = os.path.join(TMP_UPLOAD, file.filename)
     contents = await file.read()
     with open(temp_path, "wb") as f:
         f.write(contents)
+    print(f"Saved temporary file to: {temp_path}")
 
     image = Image.open(temp_path)
     array = np.array(image)
+    print(f"Loaded image array with shape: {array.shape}")
 
     encrypted_array, key = encrypt_img(array)
     base = os.path.splitext(file.filename)[0]
@@ -307,9 +318,21 @@ async def encrypt_endpoint(file: UploadFile = File(...), current_user: dict = De
     enc_view_path = os.path.join(STORAGE_ENC_VIEW, f"{enc_id}.tiff")
     preview_path = os.path.join(STORAGE_PREVIEW, f"{enc_id}_preview.png")
 
+    print(f"Saving files to:")
+    print(f"- NPY: {npy_path}")
+    print(f"- Encrypted view: {enc_view_path}")
+    print(f"- Preview: {preview_path}")
+
     save_encrypted_array(encrypted_array, npy_path)
     save_np_as_image(encrypted_array, enc_view_path)
-    save_np_as_image(generate_preview(array), preview_path,mode='PNG')
+    save_np_as_image(generate_preview(array), preview_path, mode='PNG')
+
+    # Verify files were created
+    for path in [npy_path, enc_view_path, preview_path]:
+        if os.path.exists(path):
+            print(f"✅ File exists: {path}")
+        else:
+            print(f"❌ File missing: {path}")
 
     # Insert image metadata into MongoDB
     image_doc = {
@@ -318,12 +341,14 @@ async def encrypt_endpoint(file: UploadFile = File(...), current_user: dict = De
         "type": "file",
         "preview": f"/api/preview/{enc_id}_preview",
         "path": f"/storage/preview/{enc_id}_preview.png",
+        "encrypted_path": f"/storage/encrypted_view/{enc_id}.tiff",
         "starred": False,
         "last_modified": datetime.now().isoformat(),
         "parent_folder": None,
         "user_id": current_user["id"]
     }
     db.images.insert_one(image_doc)
+    print(f"✅ Saved image metadata to MongoDB: {image_doc}")
 
     return {
         "message": "✅ Encryption successful",
@@ -331,6 +356,7 @@ async def encrypt_endpoint(file: UploadFile = File(...), current_user: dict = De
         "preview_id": f"{enc_id}_preview",
         "encrypted_id": enc_id,
         "preview_image_path": f"/storage/preview/{enc_id}_preview.png",
+        "encrypted_file_path": f"/storage/encrypted_view/{enc_id}.tiff",
         "user_id": current_user["id"]
     }
 
@@ -420,6 +446,41 @@ def get_preview(item_id: str):
         raise HTTPException(status_code=404, detail="Preview not found")
     return FileResponse(path, media_type="image/png")
 
+# === ENCRYPTED FILE ENDPOINT ===
+@app.get("/api/encrypted/{item_id}")
+async def get_encrypted_file(item_id: str, current_user: dict = Depends(get_current_user)):
+    try:
+        print(f"Looking for image with ID: {item_id}")
+        # Find the image document in MongoDB
+        image_doc = db.images.find_one({"id": item_id, "user_id": current_user["id"]})
+        if not image_doc:
+            print(f"Image not found in database: {item_id}")
+            raise HTTPException(status_code=404, detail="Image not found in database")
+        
+        # Get the encrypted file path from the document
+        if "encrypted_path" not in image_doc:
+            print(f"Image document missing encrypted_path: {image_doc}")
+            raise HTTPException(status_code=404, detail="Image document missing encrypted path")
+        
+        # Convert the stored path to a filesystem path
+        enc_path = os.path.join(BASE_DIR, image_doc["encrypted_path"].lstrip('/'))
+        print(f"Looking for encrypted file at: {enc_path}")
+        
+        if not os.path.exists(enc_path):
+            print(f"File not found at path: {enc_path}")
+            raise HTTPException(status_code=404, detail="Encrypted file not found on disk")
+        
+        print(f"Found encrypted file, sending response")
+        return FileResponse(
+            enc_path,
+            media_type="image/tiff",
+            filename=os.path.basename(enc_path),
+            headers={"Content-Disposition": f"attachment; filename={os.path.basename(enc_path)}"}
+        )
+    except Exception as e:
+        print(f"Error serving encrypted file: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error serving encrypted file: {str(e)}")
+
 # === DELETE ENDPOINT ===
 @app.delete("/api/delete/{image_id}")
 async def delete_endpoint(image_id: str, current_user: dict = Depends(get_current_user)):
@@ -458,3 +519,28 @@ async def delete_endpoint(image_id: str, current_user: dict = Depends(get_curren
         "deleted_files": deleted_files,
         "image_id": image_id
     })
+
+@app.post("/api/decrypt-upload")
+async def decrypt_upload_endpoint(file: UploadFile = File(...), key: str = Form(...)):
+    # Read the uploaded file and convert to numpy array
+    contents = await file.read()
+    import tempfile
+    import numpy as np
+    from PIL import Image
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.tiff') as tmp:
+        tmp.write(contents)
+        tmp_path = tmp.name
+    image = Image.open(tmp_path)
+    encrypted_array = np.array(image)
+    # Parse the key
+    try:
+        key_tuple = tuple(map(float, key.strip("() ").split(",")))
+        if len(key_tuple) != 5:
+            raise ValueError()
+    except:
+        raise HTTPException(status_code=400, detail="Invalid key format")
+    # Decrypt
+    decrypted = decrypt_img(encrypted_array, key_tuple)
+    dec_path = tmp_path.replace('.tiff', '_decrypted.tiff')
+    save_np_as_image(decrypted, dec_path)
+    return FileResponse(dec_path, media_type="image/tiff", filename="decrypted_result.tiff")
