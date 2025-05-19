@@ -84,12 +84,14 @@ export function Sidebar({ currentFolder, onFolderSelect, onViewStarred, onViewRe
         formData.append('parent_folder', currentFolder);
       }
 
-      console.log('Sending request to create folder...');
+      const token = localStorage.getItem('token');
+      console.log('Creating folder with token:', token);
       const response = await fetch('http://localhost:8000/api/folders', {
         method: 'POST',
         body: formData,
         headers: {
           'Accept': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
       });
 

@@ -341,11 +341,12 @@ async def unstar_item(item_id: str):
 
 # === MODIFIED LIST ITEMS ENDPOINT ===
 @app.get("/api/items", response_model=list[Item])
-def list_items(folder: Optional[str] = None):
+def list_items(folder: Optional[str] = None, current_user: dict = Depends(get_current_user)):
     items = []
     metadata = load_metadata()
     starred_items = metadata["starred"]
     image_folders = load_image_folders()
+    user_id = current_user["id"]
     
     for fname in os.listdir(STORAGE_PREVIEW):
         if fname.endswith(".png"):
@@ -369,7 +370,8 @@ def list_items(folder: Optional[str] = None):
                 last_modified=datetime.fromtimestamp(
                     os.path.getmtime(os.path.join(STORAGE_PREVIEW, fname))
                 ).isoformat(),
-                parent_folder=current_folder
+                parent_folder=current_folder,
+                user_id=user_id
             )
             items.append(item)
     
@@ -445,7 +447,7 @@ async def delete_endpoint(filename: str):
 
 # === ENCRYPTION ===
 @app.post("/api/encrypt", response_class=JSONResponse)
-async def encrypt_endpoint(file: UploadFile = File(...)):
+async def encrypt_endpoint(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
     temp_path = os.path.join(TMP_UPLOAD, file.filename)
     contents = await file.read()
     with open(temp_path, "wb") as f:
@@ -471,7 +473,8 @@ async def encrypt_endpoint(file: UploadFile = File(...)):
         "encryption_key": str(key),
         "preview_id": f"{enc_id}_preview",
         "encrypted_id": enc_id,
-        "preview_image_path": f"/storage/preview/{enc_id}_preview.png"
+        "preview_image_path": f"/storage/preview/{enc_id}_preview.png",
+        "user_id": current_user["id"]
     }
 
 # === DECRYPTION ===
@@ -524,12 +527,13 @@ async def move_item(item_id: str, folder_id: Optional[str] = Form(None)):
     return {"status": "success"}
 
 @app.get("/api/search")
-def search_items(query: str, folder: Optional[str] = None):
+def search_items(query: str, folder: Optional[str] = None, current_user: dict = Depends(get_current_user)):
     print(f"Searching for '{query}' in folder: {folder}")
     items = []
     metadata = load_metadata()
     starred_items = metadata["starred"]
     image_folders = load_image_folders()
+    user_id = current_user["id"]
     
     for fname in os.listdir(STORAGE_PREVIEW):
         if fname.endswith(".png"):
@@ -555,7 +559,8 @@ def search_items(query: str, folder: Optional[str] = None):
                     last_modified=datetime.fromtimestamp(
                         os.path.getmtime(os.path.join(STORAGE_PREVIEW, fname))
                     ).isoformat(),
-                    parent_folder=current_folder
+                    parent_folder=current_folder,
+                    user_id=user_id
                 )
                 items.append(item)
     
