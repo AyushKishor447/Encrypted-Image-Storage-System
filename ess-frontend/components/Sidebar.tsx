@@ -214,6 +214,14 @@ export function Sidebar({ currentFolder, onFolderSelect, onViewStarred, onViewRe
           <span>Recent</span>
         </button>
 
+        <a
+          href="/decrypt-upload"
+          className="flex items-center gap-3 px-6 py-2 w-full text-gray-700 hover:bg-gray-50"
+        >
+          <span style={{fontSize: '1.25rem'}} role="img" aria-label="lock">🔒</span>
+          <span>Decrypt Upload</span>
+        </a>
+
         <div className="mt-4">
           <div className="px-6 py-2 text-xs font-semibold text-gray-500 uppercase">Folders</div>
           {isLoading ? (
