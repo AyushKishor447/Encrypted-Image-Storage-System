@@ -14,6 +14,8 @@ from typing import List, Optional
 from jose import jwt
 from passlib.context import CryptContext
 import uuid
+from pymongo import MongoClient
+from dotenv import load_dotenv
 
 from api.encrypt import encrypt_img
 from api.decrypt import decrypt_img
@@ -143,35 +145,21 @@ metadata = load_metadata()
 save_metadata(metadata)
 
 # === User Management Functions ===
-def get_users():
-    if os.path.exists("storage/users.json"):
-        with open("storage/users.json", "r") as f:
-            return json.load(f)
-    return {"users": []}
-
-def save_users(users_data):
-    os.makedirs("storage", exist_ok=True)
-    with open("storage/users.json", "w") as f:
-        json.dump(users_data, f, indent=2)
+load_dotenv()
+MONGO_URI = os.getenv("MONGO_URI")
+client = MongoClient(MONGO_URI)
+db = client["ess_database"]  # Use your actual DB name
 
 def get_user_by_email(email: str):
-    users_data = get_users()
-    for user in users_data["users"]:
-        if user["email"] == email:
-            return user
-    return None
+    user = db.users.find_one({"email": email})
+    return user
 
 def create_user(user: UserCreate):
-    users_data = get_users()
-    
     # Check if user already exists
     if get_user_by_email(user.email):
         raise HTTPException(status_code=400, detail="Email already registered")
-    
-    # Create new user
     user_id = str(uuid.uuid4())
     hashed_password = pwd_context.hash(user.password)
-    
     new_user = {
         "id": user_id,
         "email": user.email,
@@ -179,10 +167,7 @@ def create_user(user: UserCreate):
         "hashed_password": hashed_password,
         "created_at": datetime.now().isoformat()
     }
-    
-    users_data["users"].append(new_user)
-    save_users(users_data)
-    
+    db.users.insert_one(new_user)
     return {
         "id": user_id,
         "email": user.email,
@@ -269,18 +254,12 @@ async def create_folder(
 ):
     print(f"Received folder creation request - Name: {name}, Parent: {parent_folder}")
     try:
-        metadata = load_metadata()
-        
-        # Create folder ID (sanitized name)
         folder_id = name.replace(" ", "_").lower()
         print(f"Generated folder ID: {folder_id}")
-        
         # Check if folder already exists
-        if any(f["id"] == folder_id and f["user_id"] == current_user["id"] for f in metadata["folders"]):
+        if db.folders.find_one({"id": folder_id, "user_id": current_user["id"]}):
             print(f"Folder {folder_id} already exists")
             raise HTTPException(status_code=400, detail="Folder already exists")
-        
-        # Create new folder
         new_folder = {
             "id": folder_id,
             "name": name,
@@ -289,15 +268,9 @@ async def create_folder(
             "created_at": datetime.now().isoformat(),
             "user_id": current_user["id"]
         }
-        print(f"Created new folder object: {new_folder}")
-        
-        # Ensure the storage directory exists
-        os.makedirs("storage", exist_ok=True)
-        
-        # Add to metadata
-        metadata["folders"].append(new_folder)
-        save_metadata(metadata)
-        
+        db.folders.insert_one(new_folder)
+        if "_id" in new_folder:
+            del new_folder["_id"]
         print(f"Successfully created folder: {new_folder}")
         return new_folder
     except Exception as e:
@@ -308,143 +281,12 @@ async def create_folder(
 async def list_folders(current_user: dict = Depends(get_current_user)):
     print("Received request to list folders")
     try:
-        metadata = load_metadata()
-        user_folders = [f for f in metadata["folders"] if f["user_id"] == current_user["id"]]
+        user_folders = list(db.folders.find({"user_id": current_user["id"]}, {"_id": 0}))
         print(f"Current folders: {user_folders}")
         return user_folders
     except Exception as e:
         print(f"Error listing folders: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to list folders: {str(e)}")
-
-# === STAR/UNSTAR ENDPOINTS ===
-@app.post("/api/items/{item_id}/star")
-async def star_item(item_id: str):
-    print(f"Attempting to star item: {item_id}")
-    metadata = load_metadata()
-    print(f"Current starred items: {metadata['starred']}")
-    if item_id not in metadata["starred"]:
-        metadata["starred"].append(item_id)
-        save_metadata(metadata)
-        print(f"Successfully starred item: {item_id}")
-    return {"status": "success"}
-
-@app.post("/api/items/{item_id}/unstar")
-async def unstar_item(item_id: str):
-    print(f"Attempting to unstar item: {item_id}")
-    metadata = load_metadata()
-    print(f"Current starred items: {metadata['starred']}")
-    if item_id in metadata["starred"]:
-        metadata["starred"].remove(item_id)
-        save_metadata(metadata)
-        print(f"Successfully unstarred item: {item_id}")
-    return {"status": "success"}
-
-# === MODIFIED LIST ITEMS ENDPOINT ===
-@app.get("/api/items", response_model=list[Item])
-def list_items(folder: Optional[str] = None, current_user: dict = Depends(get_current_user)):
-    items = []
-    metadata = load_metadata()
-    starred_items = metadata["starred"]
-    image_folders = load_image_folders()
-    user_id = current_user["id"]
-    
-    for fname in os.listdir(STORAGE_PREVIEW):
-        if fname.endswith(".png"):
-            base = os.path.splitext(fname)[0]
-            original_name = base.replace("_preview", "").replace("_encrypted", "")
-            
-            # Get the folder assignment for this image
-            current_folder = image_folders.get(base)
-            
-            # Skip if we're filtering by folder and this image isn't in the requested folder
-            if folder is not None and current_folder != folder:
-                continue
-            
-            item = Item(
-                id=base,
-                name=original_name,
-                type="file",
-                preview=f"/api/preview/{base}",
-                path=f"/storage/preview/{fname}",
-                starred=base in starred_items,
-                last_modified=datetime.fromtimestamp(
-                    os.path.getmtime(os.path.join(STORAGE_PREVIEW, fname))
-                ).isoformat(),
-                parent_folder=current_folder,
-                user_id=user_id
-            )
-            items.append(item)
-    
-    items.sort(key=lambda x: x.last_modified, reverse=True)
-    return items
-
-@app.get("/api/items/starred")
-def list_starred_items(current_user: dict = Depends(get_current_user)):
-    metadata = load_metadata()
-    all_items = list_items(current_user=current_user)
-    return [item for item in all_items if item.id in metadata["starred"] and item.user_id == current_user["id"]]
-
-@app.get("/api/items/recent")
-def list_recent_items(limit: int = 5, current_user: dict = Depends(get_current_user)):
-    all_items = list_items(current_user=current_user)
-    # Sort by last_modified and return the most recent items for the current user
-    user_items = [item for item in all_items if item.user_id == current_user["id"]]
-    return sorted(user_items, key=lambda x: x.last_modified, reverse=True)[:limit]
-
-# === PREVIEW ENDPOINT ===
-@app.get("/api/preview/{item_id}")
-def get_preview(item_id: str):
-    path = os.path.join(STORAGE_PREVIEW, f"{item_id}.png")
-    if not os.path.exists(path):
-        raise HTTPException(status_code=404, detail="Preview not found")
-    return FileResponse(path, media_type="image/png")
-
-# === DELETE ENDPOINT ===
-@app.delete("/api/delete/{filename}")
-async def delete_endpoint(filename: str):
-    print(f"Delete request received for filename: {filename}")
-    
-    # The filename we receive should be the original name without suffixes
-    # We need to construct the full filenames
-    enc_id = f"{filename}_encrypted"
-    preview_id = f"{enc_id}_preview"
-    
-    # List of files to delete with their full paths
-    files_to_delete = [
-        os.path.join(STORAGE_ENC_ARRAY, f"{enc_id}.npy"),
-        os.path.join(STORAGE_ENC_VIEW, f"{enc_id}.tiff"),
-        os.path.join(STORAGE_PREVIEW, f"{preview_id}.png")
-    ]
-    
-    print(f"Attempting to delete files: {files_to_delete}")
-    
-    # Try to delete each file
-    deleted_files = []
-    for file_path in files_to_delete:
-        try:
-            print(f"Checking file: {file_path}")
-            if os.path.exists(file_path):
-                print(f"File exists, deleting: {file_path}")
-                os.remove(file_path)
-                deleted_files.append(os.path.basename(file_path))
-            else:
-                print(f"File does not exist: {file_path}")
-        except Exception as e:
-            print(f"Error deleting {file_path}: {str(e)}")
-    
-    if not deleted_files:
-        print(f"No files were deleted for filename: {filename}")
-        raise HTTPException(
-            status_code=404, 
-            detail=f"No files found to delete. Checked paths: {[os.path.basename(f) for f in files_to_delete]}"
-        )
-    
-    print(f"Successfully deleted files: {deleted_files}")
-    return JSONResponse(content={
-        "message": "Files deleted successfully",
-        "deleted_files": deleted_files,
-        "original_filename": filename
-    })
 
 # === ENCRYPTION ===
 @app.post("/api/encrypt", response_class=JSONResponse)
@@ -468,6 +310,20 @@ async def encrypt_endpoint(file: UploadFile = File(...), current_user: dict = De
     save_encrypted_array(encrypted_array, npy_path)
     save_np_as_image(encrypted_array, enc_view_path)
     save_np_as_image(generate_preview(array), preview_path,mode='PNG')
+
+    # Insert image metadata into MongoDB
+    image_doc = {
+        "id": f"{enc_id}_preview",
+        "name": file.filename,
+        "type": "file",
+        "preview": f"/api/preview/{enc_id}_preview",
+        "path": f"/storage/preview/{enc_id}_preview.png",
+        "starred": False,
+        "last_modified": datetime.now().isoformat(),
+        "parent_folder": None,
+        "user_id": current_user["id"]
+    }
+    db.images.insert_one(image_doc)
 
     return {
         "message": "✅ Encryption successful",
@@ -503,67 +359,102 @@ async def decrypt_endpoint(filename: str = Form(...), key: str = Form(...)):
 
     return FileResponse(dec_path, media_type="image/tiff", filename=os.path.basename(dec_path))
 
-# Add endpoint to move image to folder
+# === MODIFIED LIST ITEMS ENDPOINT ===
+@app.get("/api/items", response_model=list[Item])
+def list_items(folder: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+    query = {"user_id": current_user["id"]}
+    if folder is not None:
+        query["parent_folder"] = folder
+    items = list(db.images.find(query, {"_id": 0}))
+    items.sort(key=lambda x: x["last_modified"], reverse=True)
+    return items
+
+@app.get("/api/items/starred")
+def list_starred_items(current_user: dict = Depends(get_current_user)):
+    items = list(db.images.find({"user_id": current_user["id"], "starred": True}, {"_id": 0}))
+    items.sort(key=lambda x: x["last_modified"], reverse=True)
+    return items
+
+@app.get("/api/items/recent")
+def list_recent_items(limit: int = 5, current_user: dict = Depends(get_current_user)):
+    items = list(db.images.find({"user_id": current_user["id"]}, {"_id": 0}))
+    items.sort(key=lambda x: x["last_modified"], reverse=True)
+    return items[:limit]
+
+@app.post("/api/items/{item_id}/star")
+async def star_item(item_id: str, current_user: dict = Depends(get_current_user)):
+    result = db.images.update_one({"id": item_id, "user_id": current_user["id"]}, {"$set": {"starred": True}})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Image not found")
+    return {"status": "success"}
+
+@app.post("/api/items/{item_id}/unstar")
+async def unstar_item(item_id: str, current_user: dict = Depends(get_current_user)):
+    result = db.images.update_one({"id": item_id, "user_id": current_user["id"]}, {"$set": {"starred": False}})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Image not found")
+    return {"status": "success"}
+
 @app.post("/api/items/{item_id}/move")
-async def move_item(item_id: str, folder_id: Optional[str] = Form(None)):
-    print(f"Moving item {item_id} to folder {folder_id}")
-    
-    # Load the image-folder relationships
-    image_folders = load_image_folders()
-    
-    # Update the folder assignment
-    if folder_id:
-        # Verify folder exists
-        metadata = load_metadata()
-        if not any(f["id"] == folder_id for f in metadata["folders"]):
-            raise HTTPException(status_code=404, detail="Folder not found")
-        image_folders[item_id] = folder_id
-    else:
-        # If folder_id is None, remove the image from its current folder
-        image_folders.pop(item_id, None)
-    
-    # Save the updated relationships
-    save_image_folders(image_folders)
-    
+async def move_item(item_id: str, folder_id: Optional[str] = Form(None), current_user: dict = Depends(get_current_user)):
+    update = {"parent_folder": folder_id} if folder_id else {"parent_folder": None}
+    result = db.images.update_one({"id": item_id, "user_id": current_user["id"]}, {"$set": update})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Image not found")
     return {"status": "success"}
 
 @app.get("/api/search")
 def search_items(query: str, folder: Optional[str] = None, current_user: dict = Depends(get_current_user)):
-    print(f"Searching for '{query}' in folder: {folder}")
-    items = []
-    metadata = load_metadata()
-    starred_items = metadata["starred"]
-    image_folders = load_image_folders()
-    user_id = current_user["id"]
-    
-    for fname in os.listdir(STORAGE_PREVIEW):
-        if fname.endswith(".png"):
-            base = os.path.splitext(fname)[0]
-            original_name = base.replace("_preview", "").replace("_encrypted", "")
-            
-            # Get the folder assignment for this image
-            current_folder = image_folders.get(base)
-            
-            # Skip if we're filtering by folder and this image isn't in the requested folder
-            if folder is not None and current_folder != folder:
-                continue
-            
-            # Check if the search query matches the filename
-            if query.lower() in original_name.lower():
-                item = Item(
-                    id=base,
-                    name=original_name,
-                    type="file",
-                    preview=f"/api/preview/{base}",
-                    path=f"/storage/preview/{fname}",
-                    starred=base in starred_items,
-                    last_modified=datetime.fromtimestamp(
-                        os.path.getmtime(os.path.join(STORAGE_PREVIEW, fname))
-                    ).isoformat(),
-                    parent_folder=current_folder,
-                    user_id=user_id
-                )
-                items.append(item)
-    
-    items.sort(key=lambda x: x.last_modified, reverse=True)
+    search_query = {"user_id": current_user["id"], "name": {"$regex": query, "$options": "i"}}
+    if folder is not None:
+        search_query["parent_folder"] = folder
+    items = list(db.images.find(search_query, {"_id": 0}))
+    items.sort(key=lambda x: x["last_modified"], reverse=True)
     return items
+
+# === PREVIEW ENDPOINT ===
+@app.get("/api/preview/{item_id}")
+def get_preview(item_id: str):
+    path = os.path.join(STORAGE_PREVIEW, f"{item_id}.png")
+    if not os.path.exists(path):
+        raise HTTPException(status_code=404, detail="Preview not found")
+    return FileResponse(path, media_type="image/png")
+
+# === DELETE ENDPOINT ===
+@app.delete("/api/delete/{image_id}")
+async def delete_endpoint(image_id: str, current_user: dict = Depends(get_current_user)):
+    # Find the image document in MongoDB
+    image_doc = db.images.find_one({"id": image_id, "user_id": current_user["id"]})
+    if not image_doc:
+        raise HTTPException(status_code=404, detail="Image not found in database")
+
+    # Build the file paths from the document
+    base = image_doc["id"].replace("_preview", "")
+    npy_path = os.path.join(STORAGE_ENC_ARRAY, f"{base}.npy")
+    enc_view_path = os.path.join(STORAGE_ENC_VIEW, f"{base}.tiff")
+    preview_path = os.path.join(STORAGE_PREVIEW, f"{image_doc['id']}.png")
+
+    files_to_delete = [npy_path, enc_view_path, preview_path]
+    deleted_files = []
+    for file_path in files_to_delete:
+        try:
+            if os.path.exists(file_path):
+                os.remove(file_path)
+                deleted_files.append(os.path.basename(file_path))
+        except Exception as e:
+            print(f"Error deleting {file_path}: {str(e)}")
+
+    # Remove the image document from MongoDB
+    db.images.delete_one({"id": image_id, "user_id": current_user["id"]})
+
+    if not deleted_files:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No files found to delete. Checked paths: {[os.path.basename(f) for f in files_to_delete]}"
+        )
+
+    return JSONResponse(content={
+        "message": "Files deleted successfully",
+        "deleted_files": deleted_files,
+        "image_id": image_id
+    })

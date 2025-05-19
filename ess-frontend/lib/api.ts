@@ -33,6 +33,7 @@ export async function uploadImage(file: File): Promise<EncryptionResponse> {
 }
 
 export async function deleteImage(filename: string): Promise<void> {
+  const token = localStorage.getItem('token');
   const baseFilename = filename.replace(/_preview$/, '').replace(/_encrypted$/, '');
   const url = `${API_BASE}/api/delete/${baseFilename}`;
   
@@ -44,6 +45,9 @@ export async function deleteImage(filename: string): Promise<void> {
   
   const response = await fetch(url, {
     method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
   });
 
   const responseText = await response.text();
