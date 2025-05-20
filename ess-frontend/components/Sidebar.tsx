@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Star, Clock, FolderIcon, Plus, ChevronRight, ChevronDown } from 'lucide-react';
+import { Star, Clock, FolderIcon, Plus, ChevronRight, ChevronDown, UserPlus, Trash2 } from 'lucide-react';
 import { Modal } from './Modal';
 import axios from 'axios';
 
@@ -18,9 +18,10 @@ interface SidebarProps {
   onFolderSelect: (folderId: string | null) => void;
   onViewStarred: () => void;
   onViewRecent: () => void;
+  onViewShared: () => void;
 }
 
-export function Sidebar({ currentFolder, onFolderSelect, onViewStarred, onViewRecent }: SidebarProps) {
+export function Sidebar({ currentFolder, onFolderSelect, onViewStarred, onViewRecent, onViewShared }: SidebarProps) {
   const [folders, setFolders] = useState<Folder[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,6 +30,8 @@ export function Sidebar({ currentFolder, onFolderSelect, onViewStarred, onViewRe
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
   const [token, setToken] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
+  const [folderToDelete, setFolderToDelete] = useState<Folder | null>(null);
+  const [isDeletingFolder, setIsDeletingFolder] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -122,6 +125,22 @@ export function Sidebar({ currentFolder, onFolderSelect, onViewStarred, onViewRe
     }
   };
 
+  const handleDeleteFolder = async (folderId: string) => {
+    if (!token) return;
+    setIsDeletingFolder(true);
+    try {
+      await axios.delete(`http://localhost:8000/api/folders/${folderId}`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      setFolderToDelete(null);
+      await fetchFolders(token);
+    } catch (error) {
+      alert('Failed to delete folder');
+    } finally {
+      setIsDeletingFolder(false);
+    }
+  };
+
   const toggleFolder = (folderId: string) => {
     const newExpanded = new Set(expandedFolders);
     if (newExpanded.has(folderId)) {
@@ -140,7 +159,7 @@ export function Sidebar({ currentFolder, onFolderSelect, onViewStarred, onViewRe
     }
     
     return childFolders.map(folder => (
-      <div key={folder.id} style={{ marginLeft: `${level * 16}px` }}>
+      <div key={folder.id} style={{ marginLeft: `${level * 16}px` }} className="flex items-center group">
         <button
           onClick={() => onFolderSelect(folder.id)}
           className={`flex items-center gap-2 w-full px-4 py-2 text-sm ${
@@ -163,7 +182,14 @@ export function Sidebar({ currentFolder, onFolderSelect, onViewStarred, onViewRe
             </button>
           )}
           <FolderIcon className="w-4 h-4" />
-          <span className="truncate">{folder.name}</span>
+          <span className="truncate flex-1 text-left">{folder.name}</span>
+        </button>
+        <button
+          className="ml-2 p-1 text-gray-400 hover:text-red-600 invisible group-hover:visible"
+          title="Delete folder"
+          onClick={() => setFolderToDelete(folder)}
+        >
+          <Trash2 className="w-4 h-4" />
         </button>
         {expandedFolders.has(folder.id) && renderFolderTree(folder.id, level + 1)}
       </div>
@@ -212,6 +238,14 @@ export function Sidebar({ currentFolder, onFolderSelect, onViewStarred, onViewRe
         >
           <Clock className="w-5 h-5" />
           <span>Recent</span>
+        </button>
+
+        <button
+          onClick={onViewShared}
+          className="flex items-center gap-3 px-6 py-2 w-full text-gray-700 hover:bg-gray-50"
+        >
+          <UserPlus className="w-5 h-5" />
+          <span>Shared with me</span>
         </button>
 
         <a
@@ -269,6 +303,25 @@ export function Sidebar({ currentFolder, onFolderSelect, onViewStarred, onViewRe
             >
               Create
             </button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal isOpen={!!folderToDelete} onClose={() => setFolderToDelete(null)}>
+        <div className="w-[400px] p-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Delete Folder</h3>
+          <p className="mb-4">Are you sure you want to delete the folder <b>{folderToDelete?.name}</b> and all images inside it? This action cannot be undone.</p>
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => setFolderToDelete(null)}
+              className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium"
+              disabled={isDeletingFolder}
+            >Cancel</button>
+            <button
+              onClick={() => folderToDelete && handleDeleteFolder(folderToDelete.id)}
+              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 font-medium transition-colors disabled:opacity-50"
+              disabled={isDeletingFolder}
+            >{isDeletingFolder ? 'Deleting...' : 'Delete'}</button>
           </div>
         </div>
       </Modal>

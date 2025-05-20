@@ -11,9 +11,11 @@ interface ImageCardProps {
   onDelete?: () => void;
   onStar?: () => void;
   folders?: Array<{ id: string; name: string }>;
+  selected?: boolean;
+  onSelect?: (id: string, selected: boolean) => void;
 }
 
-export default function ImageCard({ item, onDelete, onStar, folders = [] }: ImageCardProps) {
+export default function ImageCard({ item, onDelete, onStar, folders = [], selected = false, onSelect }: ImageCardProps) {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showKeyDialog, setShowKeyDialog] = useState(false);
@@ -159,7 +161,16 @@ export default function ImageCard({ item, onDelete, onStar, folders = [] }: Imag
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden relative">
+      {/* Checkbox for multi-select */}
+      {onSelect && (
+        <input
+          type="checkbox"
+          checked={selected}
+          onChange={e => onSelect(item.id, e.target.checked)}
+          className="absolute top-2 left-2 z-10 w-5 h-5 accent-blue-600"
+        />
+      )}
       <div className="aspect-square relative group">
         <img
           src={`http://localhost:8000${item.preview}`}

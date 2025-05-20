@@ -296,6 +296,22 @@ async def list_folders(current_user: dict = Depends(get_current_user)):
         print(f"Error listing folders: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to list folders: {str(e)}")
 
+@app.delete("/api/folders/{folder_id}")
+async def delete_folder(folder_id: str, current_user: dict = Depends(get_current_user)):
+    # Find the folder
+    folder = db.folders.find_one({"id": folder_id, "user_id": current_user["id"]})
+    if not folder:
+        raise HTTPException(status_code=404, detail="Folder not found")
+    # Find all images in this folder
+    images_in_folder = list(db.images.find({"parent_folder": folder_id, "user_id": current_user["id"]}))
+    # Delete all images in this folder
+    for image in images_in_folder:
+        db.images.delete_one({"id": image["id"], "user_id": current_user["id"]})
+        # Optionally: delete files from disk as well (not shown here)
+    # Delete the folder
+    db.folders.delete_one({"id": folder_id, "user_id": current_user["id"]})
+    return {"status": "success", "deleted_images": [img["id"] for img in images_in_folder], "deleted_folder": folder_id}
+
 # === ENCRYPTION ===
 @app.post("/api/encrypt", response_class=JSONResponse)
 async def encrypt_endpoint(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
@@ -387,11 +403,26 @@ async def decrypt_endpoint(filename: str = Form(...), key: str = Form(...)):
 
 # === MODIFIED LIST ITEMS ENDPOINT ===
 @app.get("/api/items", response_model=list[Item])
-def list_items(folder: Optional[str] = None, current_user: dict = Depends(get_current_user)):
-    query = {"user_id": current_user["id"]}
-    if folder is not None:
-        query["parent_folder"] = folder
-    items = list(db.images.find(query, {"_id": 0}))
+def list_items(
+    folder: Optional[str] = None,
+    shared: Optional[bool] = False,
+    current_user: dict = Depends(get_current_user)
+):
+    if shared:
+        # Find all image_ids shared with this user
+        shared_records = list(db.shared_images.find({"shared_with_email": current_user["email"]}))
+        if not shared_records:
+            return []  # No shared images, return empty list
+        shared_image_ids = [rec["image_id"] for rec in shared_records]
+        query = {"id": {"$in": shared_image_ids}}
+        if folder is not None:
+            query["parent_folder"] = folder
+        items = list(db.images.find(query, {"_id": 0}))
+    else:
+        query = {"user_id": current_user["id"]}
+        if folder is not None:
+            query["parent_folder"] = folder
+        items = list(db.images.find(query, {"_id": 0}))
     items.sort(key=lambda x: x["last_modified"], reverse=True)
     return items
 

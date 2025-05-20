@@ -8,13 +8,15 @@ import { UploadButton } from '@/components/UploadButton';
 import { listImages } from '@/lib/api';
 import { ImageItem } from '@/lib/types';
 import { SearchBar } from '@/components/SearchBar';
+import { Trash2, Share2 } from 'lucide-react';
+import { Modal } from '@/components/Modal';
 
 // Dynamically import components that need to be client-side only
 const ImageCard = dynamic(() => import('@/components/ImageCard'), { ssr: false });
 const ImageList = dynamic(() => import('@/components/ImageList'), { ssr: false });
 
 type ViewMode = 'grid' | 'list';
-type ContentView = 'all' | 'starred' | 'recent' | 'folder';
+type ContentView = 'all' | 'starred' | 'recent' | 'folder' | 'shared';
 
 export default function Home() {
   const [images, setImages] = useState<ImageItem[]>([]);
@@ -26,6 +28,8 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [ready, setReady] = useState(false);
   const [token, setToken] = useState<string | null>(null);
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -40,7 +44,9 @@ export default function Home() {
     try {
       setIsLoading(true);
       let url = 'http://localhost:8000/api/items';
-      if (searchQuery && contentView !== 'starred' && contentView !== 'recent') {
+      if (contentView === 'shared') {
+        url = 'http://localhost:8000/api/items?shared=true';
+      } else if (searchQuery && contentView !== 'starred' && contentView !== 'recent') {
         url = 'http://localhost:8000/api/search?query=' + encodeURIComponent(searchQuery);
         if (contentView === 'folder' && currentFolder) {
           url += `&folder=${encodeURIComponent(currentFolder)}`;
@@ -94,6 +100,11 @@ export default function Home() {
     setCurrentFolder(null);
   };
 
+  const handleViewShared = () => {
+    setContentView('shared');
+    setCurrentFolder(null);
+  };
+
   const handleStarItem = async (itemId: string, isStarred: boolean) => {
     if (!token) return;
     try {
@@ -118,6 +129,31 @@ export default function Home() {
     setSearchQuery(query);
   };
 
+  const handleSelectImage = (id: string, selected: boolean) => {
+    setSelectedImages(prev => selected ? [...prev, id] : prev.filter(i => i !== id));
+  };
+
+  const handleSelectAll = () => {
+    setSelectedImages(images.map(img => img.id));
+  };
+
+  const handleDeselectAll = () => {
+    setSelectedImages([]);
+  };
+
+  const handleBulkDelete = async () => {
+    if (!token) return;
+    setShowBulkDeleteConfirm(false);
+    for (const id of selectedImages) {
+      await fetch(`http://localhost:8000/api/delete/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+    }
+    setSelectedImages([]);
+    loadImages();
+  };
+
   if (!ready) {
     return null; // Only render after client-side mount and token is available
   }
@@ -130,6 +166,8 @@ export default function Home() {
         return 'Recent Images';
       case 'folder':
         return currentFolder || 'My Images';
+      case 'shared':
+        return 'Shared Images';
       default:
         return 'My Images';
     }
@@ -149,10 +187,37 @@ export default function Home() {
         onFolderSelect={handleFolderSelect}
         onViewStarred={handleViewStarred}
         onViewRecent={handleViewRecent}
+        onViewShared={handleViewShared}
       />
       
       <main className="pl-60 pt-16">
         <div className="p-8">
+          {/* Bulk action toolbar */}
+          {selectedImages.length > 0 && (
+            <div className="mb-4 flex items-center gap-4 bg-blue-50 border border-blue-200 rounded p-3">
+              <span>{selectedImages.length} selected</span>
+              <button onClick={handleSelectAll} className="text-sm text-blue-600 hover:underline">Select all</button>
+              <button onClick={handleDeselectAll} className="text-sm text-blue-600 hover:underline">Clear</button>
+              <button onClick={() => setShowBulkDeleteConfirm(true)} className="flex items-center gap-1 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"><Trash2 className="w-4 h-4" /> Delete</button>
+              {/* Share button can be added here */}
+            </div>
+          )}
+          <Modal isOpen={showBulkDeleteConfirm} onClose={() => setShowBulkDeleteConfirm(false)}>
+            <div className="w-[400px] p-6">
+              <h3 className="text-lg font-medium mb-4">Confirm Delete</h3>
+              <p className="mb-4">Are you sure you want to delete <b>{selectedImages.length}</b> images? This action cannot be undone.</p>
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => setShowBulkDeleteConfirm(false)}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                >Cancel</button>
+                <button
+                  onClick={handleBulkDelete}
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                >Delete</button>
+              </div>
+            </div>
+          </Modal>
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-lg font-medium text-gray-900">{getViewTitle()}</h2>
             <div className="flex items-center gap-4">
@@ -187,6 +252,8 @@ export default function Home() {
                   ? 'Star some images to see them here'
                   : contentView === 'recent'
                   ? 'Recently viewed images will appear here'
+                  : contentView === 'shared'
+                  ? 'No shared images yet'
                   : 'Upload your first image to get started'}
               </p>
             </div>
@@ -199,6 +266,8 @@ export default function Home() {
                   onDelete={loadImages}
                   onStar={() => handleStarItem(image.id, image.starred)}
                   folders={folders}
+                  selected={selectedImages.includes(image.id)}
+                  onSelect={handleSelectImage}
                 />
               ))}
             </div>
