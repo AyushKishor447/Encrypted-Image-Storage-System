@@ -10,6 +10,7 @@ import { ImageItem } from '@/lib/types';
 import { SearchBar } from '@/components/SearchBar';
 import { Trash2, Share2 } from 'lucide-react';
 import { Modal } from '@/components/Modal';
+import ShareDialog from '@/components/ShareDialog';
 
 // Dynamically import components that need to be client-side only
 const ImageCard = dynamic(() => import('@/components/ImageCard'), { ssr: false });
@@ -30,6 +31,7 @@ export default function Home() {
   const [token, setToken] = useState<string | null>(null);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
+  const [showShareDialog, setShowShareDialog] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -199,7 +201,7 @@ export default function Home() {
               <button onClick={handleSelectAll} className="text-sm text-blue-600 hover:underline">Select all</button>
               <button onClick={handleDeselectAll} className="text-sm text-blue-600 hover:underline">Clear</button>
               <button onClick={() => setShowBulkDeleteConfirm(true)} className="flex items-center gap-1 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"><Trash2 className="w-4 h-4" /> Delete</button>
-              {/* Share button can be added here */}
+              <button onClick={() => setShowShareDialog(true)} className="flex items-center gap-1 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"><Share2 className="w-4 h-4" /> Share</button>
             </div>
           )}
           <Modal isOpen={showBulkDeleteConfirm} onClose={() => setShowBulkDeleteConfirm(false)}>
@@ -218,6 +220,15 @@ export default function Home() {
               </div>
             </div>
           </Modal>
+          <ShareDialog
+            isOpen={showShareDialog}
+            onClose={() => setShowShareDialog(false)}
+            imageIds={selectedImages}
+            onShared={() => {
+              setShowShareDialog(false);
+              setSelectedImages([]);
+            }}
+          />
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-lg font-medium text-gray-900">{getViewTitle()}</h2>
             <div className="flex items-center gap-4">

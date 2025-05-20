@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Depends
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Depends, Body
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -575,3 +575,22 @@ async def decrypt_upload_endpoint(file: UploadFile = File(...), key: str = Form(
     dec_path = tmp_path.replace('.tiff', '_decrypted.tiff')
     save_np_as_image(decrypted, dec_path)
     return FileResponse(dec_path, media_type="image/tiff", filename="decrypted_result.tiff")
+
+@app.post("/api/share")
+async def share_images(
+    data: dict = Body(...),
+    current_user: dict = Depends(get_current_user)
+):
+    image_ids = data.get("image_ids")
+    email = data.get("email")
+    if not image_ids or not isinstance(image_ids, list) or not email:
+        raise HTTPException(status_code=400, detail="Missing image_ids or email")
+    # Only allow sharing images the user owns
+    for image_id in image_ids:
+        image = db.images.find_one({"id": image_id, "user_id": current_user["id"]})
+        if not image:
+            raise HTTPException(status_code=403, detail=f"You do not own image {image_id}")
+        # Prevent duplicate shares
+        if not db.shared_images.find_one({"image_id": image_id, "shared_with_email": email}):
+            db.shared_images.insert_one({"image_id": image_id, "shared_with_email": email})
+    return {"status": "success", "shared": len(image_ids), "email": email}
