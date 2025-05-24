@@ -2,7 +2,7 @@ name: Backend CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [ hosting ]
     paths:
       - 'backend.py'
       - 'api/**'
@@ -11,7 +11,7 @@ on:
       - 'storage/**'
       - '.github/workflows/backend.yml'
   pull_request:
-    branches: [ main ]
+    branches: [ hosting ]
     paths:
       - 'backend.py'
       - 'api/**'
@@ -51,7 +51,7 @@ jobs:
   deploy:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/hosting'
     
     steps:
     - uses: actions/checkout@v3
