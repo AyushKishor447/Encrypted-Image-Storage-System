@@ -157,6 +157,7 @@ load_dotenv()
 MONGO_URI = os.getenv("MONGO_URI")
 client = MongoClient(MONGO_URI)
 db = client["ess_database"]  # Use your actual DB name
+# db = client["ESS-DATABASE"]  # Use your actual DB name
 
 def get_user_by_email(email: str):
     user = db.users.find_one({"email": email})

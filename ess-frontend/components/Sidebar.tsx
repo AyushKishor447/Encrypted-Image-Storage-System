@@ -209,7 +209,7 @@ export function Sidebar({ currentFolder, onFolderSelect, onViewStarred, onViewRe
           className="flex items-center gap-3 px-6 py-3 rounded-full shadow-sm bg-white hover:bg-gray-50 border border-gray-300 w-full"
         >
           <Plus className="w-5 h-5" />
-          <span className="font-medium">New</span>
+          <span className="font-medium">Create Folder</span>
         </button>
       </div>
       
