@@ -22,7 +22,7 @@ from api.encrypt import encrypt_img
 from api.decrypt import decrypt_img
 from api.preview import generate_preview
 from utils.utils import save_encrypted_array, load_encrypted_array, save_np_as_image
-
+load_dotenv()
 app = FastAPI()
 
 # Enable CORS for frontend
@@ -56,7 +56,7 @@ for folder in [TMP_UPLOAD, STORAGE_ENC_ARRAY, STORAGE_ENC_VIEW, STORAGE_PREVIEW,
     os.makedirs(folder, exist_ok=True)
 
 # === Authentication Setup ===
-SECRET_KEY = "your-secret-key-here"  # Change this in production!
+SECRET_KEY = os.getenv("JWT_SECRET_KEY")  # Change this in production!
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -153,7 +153,7 @@ metadata = load_metadata()
 save_metadata(metadata)
 
 # === User Management Functions ===
-load_dotenv()
+
 MONGO_URI = os.getenv("MONGO_URI")
 client = MongoClient(MONGO_URI)
 db = client["ess_database"]  # Use your actual DB name
