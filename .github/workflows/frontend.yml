@@ -19,6 +19,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    environment: ESS_env
     defaults:
       run:
         working-directory: ess-frontend
@@ -46,9 +47,10 @@ jobs:
   deploy:
     needs: test
     runs-on: ubuntu-latest
+    environment: ESS_env
     if: github.ref == 'refs/heads/hosting'
     env:
-      # NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+      NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
     
     steps:
     - uses: actions/checkout@v3

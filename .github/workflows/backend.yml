@@ -28,9 +28,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    environment: ESS_env
     env:
       MONGO_URI: ${{ secrets.MONGO_URI }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
 
     steps:
     - uses: actions/checkout@v3
@@ -59,10 +60,11 @@ jobs:
   deploy:
     needs: test
     runs-on: ubuntu-latest
+    environment: ESS_env
     if: github.ref == 'refs/heads/hosting'
     env:
       MONGO_URI: ${{ secrets.MONGO_URI }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
     
     steps:
     - uses: actions/checkout@v3
