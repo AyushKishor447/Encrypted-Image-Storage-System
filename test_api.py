@@ -19,10 +19,10 @@ SHARED_EMAIL = "shareduser@example.com"
 def setup_user():
     global ACCESS_TOKEN
     # Signup
-    client.post(
-        "/api/auth/signup",
-        json={"name": TEST_NAME, "email": TEST_EMAIL, "password": TEST_PASSWORD}
-    )
+    # client.post(
+    #     "/api/auth/signup",
+    #     json={"name": TEST_NAME, "email": TEST_EMAIL, "password": TEST_PASSWORD}
+    # )
     # Login
     response = client.post(
         "/api/auth/login",
