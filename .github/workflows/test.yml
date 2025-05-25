@@ -20,9 +20,20 @@ on:
       - 'storage/**'
       - '.github/workflows/test.yml'
 
+# Required secrets:
+# - MONGO_URI: MongoDB connection string for testing
+# - JWT_SECRET: Secret key for JWT token generation
+# - TEST_USER_EMAIL: Email for test user
+# - TEST_USER_PASSWORD: Password for test user
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      MONGO_URI: ${{ secrets.MONGO_URI }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+      TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
 
     steps:
     - uses: actions/checkout@v3

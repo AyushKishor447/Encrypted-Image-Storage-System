@@ -20,9 +20,17 @@ on:
       - 'storage/**'
       - '.github/workflows/backend.yml'
 
+# Required secrets:
+# - MONGO_URI: MongoDB connection string for production
+# - JWT_SECRET: Secret key for JWT token generation
+# - DEPLOY_KEY: SSH key for deployment (if using SSH deployment)
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      MONGO_URI: ${{ secrets.MONGO_URI }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
     steps:
     - uses: actions/checkout@v3
@@ -52,6 +60,9 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/hosting'
+    env:
+      MONGO_URI: ${{ secrets.MONGO_URI }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
     
     steps:
     - uses: actions/checkout@v3
@@ -67,9 +78,6 @@ jobs:
         pip install -r requirements.txt
         
     - name: Deploy to production
-      env:
-        MONGO_URI: ${{ secrets.MONGO_URI }}
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
       run: |
         # Add your deployment commands here
         # For example, if using Heroku:

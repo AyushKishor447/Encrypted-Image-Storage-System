@@ -12,12 +12,18 @@ on:
       - 'ess-frontend/**'
       - '.github/workflows/frontend.yml'
 
+# Required secrets:
+# - NEXT_PUBLIC_API_URL: URL of the backend API
+# - DEPLOY_KEY: SSH key for deployment (if using SSH deployment)
+
 jobs:
   test:
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ess-frontend
+    env:
+      NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
 
     steps:
     - uses: actions/checkout@v3
@@ -36,13 +42,13 @@ jobs:
       
     - name: Build
       run: npm run build
-      env:
-        NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
 
   deploy:
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/hosting'
+    env:
+      NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
     
     steps:
     - uses: actions/checkout@v3
@@ -58,8 +64,6 @@ jobs:
       
     - name: Build
       run: npm run build
-      env:
-        NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
         
     - name: Deploy to production
       run: |
