@@ -155,7 +155,18 @@ save_metadata(metadata)
 # === User Management Functions ===
 
 MONGO_URI = os.getenv("MONGO_URI")
-client = MongoClient(MONGO_URI)
+client = MongoClient(
+    MONGO_URI,
+    tls=True,
+    tlsAllowInvalidCertificates=True,
+    serverSelectionTimeoutMS=5000,
+    retryWrites=True,
+    retryReads=True,
+    maxPoolSize=50,
+    minPoolSize=10,
+    maxIdleTimeMS=30000,
+    waitQueueTimeoutMS=5000
+)
 db = client["ess_database"]  # Use your actual DB name
 # db = client["ESS-DATABASE"]  # Use your actual DB name
 

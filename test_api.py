@@ -1,7 +1,9 @@
 import os
 import pytest
+import time
 from fastapi.testclient import TestClient
-from backend import app
+from backend import app, client as mongo_client
+from pymongo.errors import ServerSelectionTimeoutError
 
 client = TestClient(app)
 
@@ -15,9 +17,25 @@ ENCRYPTED_FILE_NAME = None
 FOLDER_ID = None
 SHARED_EMAIL = "shareduser@example.com"
 
+def wait_for_mongodb(max_retries=5, delay=2):
+    """Wait for MongoDB to be available with retries"""
+    for i in range(max_retries):
+        try:
+            # Try to ping the server
+            mongo_client.admin.command('ping')
+            return True
+        except ServerSelectionTimeoutError:
+            if i < max_retries - 1:
+                time.sleep(delay)
+            else:
+                raise Exception("Could not connect to MongoDB after multiple retries")
+
 @pytest.fixture(scope="session", autouse=True)
 def setup_user():
     global ACCESS_TOKEN
+    # Wait for MongoDB to be available
+    wait_for_mongodb()
+    
     # Signup
     # client.post(
     #     "/api/auth/signup",

@@ -1,0 +1,1668 @@
+Run pytest test_api.py --cov=./ --cov-report=xml
+============================= test session starts ==============================
+platform linux -- Python 3.11.12, pytest-7.4.3, pluggy-1.6.0
+rootdir: /home/runner/work/Encrypted-Image-Storage-System/Encrypted-Image-Storage-System
+plugins: cov-4.1.0, mock-3.14.0, anyio-4.9.0
+collected 13 items
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/coverage/report_core.py:116: CoverageWarning: Couldn't parse '/home/runner/work/Encrypted-Image-Storage-System/Encrypted-Image-Storage-System/config-3.py': No source for code: '/home/runner/work/Encrypted-Image-Storage-System/Encrypted-Image-Storage-System/config-3.py'. (couldnt-parse)
+  coverage._warn(msg, slug="couldnt-parse")
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/coverage/report_core.py:116: CoverageWarning: Couldn't parse '/home/runner/work/Encrypted-Image-Storage-System/Encrypted-Image-Storage-System/config.py': No source for code: '/home/runner/work/Encrypted-Image-Storage-System/Encrypted-Image-Storage-System/config.py'. (couldnt-parse)
+  coverage._warn(msg, slug="couldnt-parse")
+test_api.py EEEEEEEEEEEEE                                                [100%]
+
+==================================== ERRORS ====================================
+___________________ ERROR at setup of test_encrypt_endpoint ____________________
+
+    @pytest.fixture(scope="session", autouse=True)
+    def setup_user():
+        global ACCESS_TOKEN
+        # Signup
+        # client.post(
+        #     "/api/auth/signup",
+        #     json={"name": TEST_NAME, "email": TEST_EMAIL, "password": TEST_PASSWORD}
+        # )
+        # Login
+>       response = client.post(
+            "/api/auth/login",
+            data={"username": TEST_EMAIL, "password": TEST_PASSWORD},
+            headers={"Content-Type": "application/x-www-form-urlencoded"}
+        )
+
+test_api.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:538: in post
+    return super().post(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1132: in post
+    return self.request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:437: in request
+    return super().request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:814: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:901: in send
+    response = self._send_handling_auth(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:929: in _send_handling_auth
+    response = self._send_handling_redirects(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:966: in _send_handling_redirects
+    response = self._send_single_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1002: in _send_single_request
+    response = transport.handle_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:340: in handle_request
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:337: in handle_request
+    portal.call(self.app, scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:290: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:221: in _call_func
+    retval = await retval_or_awaitable
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/applications.py:1054: in __call__
+    await super().__call__(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/applications.py:112: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:187: in __call__
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:165: in __call__
+    await self.app(scope, receive, _send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/cors.py:85: in __call__
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/exceptions.py:62: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:714: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:734: in app
+    await route.handle(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:288: in handle
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:76: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:73: in app
+    response = await f(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:301: in app
+    raw_response = await run_endpoint_function(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:212: in run_endpoint_function
+    return await dependant.call(**values)
+backend.py:234: in login
+    user = authenticate_user(form_data.username, form_data.password)
+backend.py:191: in authenticate_user
+    user = get_user_by_email(email)
+backend.py:163: in get_user_by_email
+    user = db.users.find_one({"email": email})
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/collection.py:1328: in find_one
+    for result in cursor.limit(-1):
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1238: in next
+    if len(self.__data) or self._refresh():
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1130: in _refresh
+    self.__session = self.__collection.database.client._ensure_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1935: in _ensure_session
+    return self.__start_session(True, causal_consistency=False)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1883: in __start_session
+    server_session = self._get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1921: in _get_server_session
+    return self._topology.get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:520: in get_server_session
+    session_timeout = self._check_session_support()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:504: in _check_session_support
+    self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>>
+selector = <function readable_server_selector at 0x7fc02fa55440>, timeout = 30
+address = None
+
+    def _select_servers_loop(self, selector, timeout, address):
+        """select_servers() guts. Hold the lock when calling this."""
+        now = _time()
+        end_time = now + timeout
+        server_descriptions = self._description.apply_selector(
+            selector, address, custom_selector=self._settings.server_selector)
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+>               raise ServerSelectionTimeoutError(
+                    "%s, Timeout: %ss, Topology Description: %r" %
+                    (self._error_message(selector), timeout, self.description))
+E               pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:218: ServerSelectionTimeoutError
+_____________________ ERROR at setup of test_create_folder _____________________
+
+    @pytest.fixture(scope="session", autouse=True)
+    def setup_user():
+        global ACCESS_TOKEN
+        # Signup
+        # client.post(
+        #     "/api/auth/signup",
+        #     json={"name": TEST_NAME, "email": TEST_EMAIL, "password": TEST_PASSWORD}
+        # )
+        # Login
+>       response = client.post(
+            "/api/auth/login",
+            data={"username": TEST_EMAIL, "password": TEST_PASSWORD},
+            headers={"Content-Type": "application/x-www-form-urlencoded"}
+        )
+
+test_api.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:538: in post
+    return super().post(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1132: in post
+    return self.request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:437: in request
+    return super().request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:814: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:901: in send
+    response = self._send_handling_auth(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:929: in _send_handling_auth
+    response = self._send_handling_redirects(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:966: in _send_handling_redirects
+    response = self._send_single_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1002: in _send_single_request
+    response = transport.handle_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:340: in handle_request
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:337: in handle_request
+    portal.call(self.app, scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:290: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:221: in _call_func
+    retval = await retval_or_awaitable
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/applications.py:1054: in __call__
+    await super().__call__(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/applications.py:112: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:187: in __call__
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:165: in __call__
+    await self.app(scope, receive, _send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/cors.py:85: in __call__
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/exceptions.py:62: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:714: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:734: in app
+    await route.handle(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:288: in handle
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:76: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:73: in app
+    response = await f(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:301: in app
+    raw_response = await run_endpoint_function(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:212: in run_endpoint_function
+    return await dependant.call(**values)
+backend.py:234: in login
+    user = authenticate_user(form_data.username, form_data.password)
+backend.py:191: in authenticate_user
+    user = get_user_by_email(email)
+backend.py:163: in get_user_by_email
+    user = db.users.find_one({"email": email})
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/collection.py:1328: in find_one
+    for result in cursor.limit(-1):
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1238: in next
+    if len(self.__data) or self._refresh():
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1130: in _refresh
+    self.__session = self.__collection.database.client._ensure_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1935: in _ensure_session
+    return self.__start_session(True, causal_consistency=False)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1883: in __start_session
+    server_session = self._get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1921: in _get_server_session
+    return self._topology.get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:520: in get_server_session
+    session_timeout = self._check_session_support()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:504: in _check_session_support
+    self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>>
+selector = <function readable_server_selector at 0x7fc02fa55440>, timeout = 30
+address = None
+
+    def _select_servers_loop(self, selector, timeout, address):
+        """select_servers() guts. Hold the lock when calling this."""
+        now = _time()
+        end_time = now + timeout
+        server_descriptions = self._description.apply_selector(
+            selector, address, custom_selector=self._settings.server_selector)
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+>               raise ServerSelectionTimeoutError(
+                    "%s, Timeout: %ss, Topology Description: %r" %
+                    (self._error_message(selector), timeout, self.description))
+E               pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:218: ServerSelectionTimeoutError
+_____________________ ERROR at setup of test_list_folders ______________________
+
+    @pytest.fixture(scope="session", autouse=True)
+    def setup_user():
+        global ACCESS_TOKEN
+        # Signup
+        # client.post(
+        #     "/api/auth/signup",
+        #     json={"name": TEST_NAME, "email": TEST_EMAIL, "password": TEST_PASSWORD}
+        # )
+        # Login
+>       response = client.post(
+            "/api/auth/login",
+            data={"username": TEST_EMAIL, "password": TEST_PASSWORD},
+            headers={"Content-Type": "application/x-www-form-urlencoded"}
+        )
+
+test_api.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:538: in post
+    return super().post(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1132: in post
+    return self.request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:437: in request
+    return super().request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:814: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:901: in send
+    response = self._send_handling_auth(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:929: in _send_handling_auth
+    response = self._send_handling_redirects(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:966: in _send_handling_redirects
+    response = self._send_single_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1002: in _send_single_request
+    response = transport.handle_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:340: in handle_request
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:337: in handle_request
+    portal.call(self.app, scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:290: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:221: in _call_func
+    retval = await retval_or_awaitable
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/applications.py:1054: in __call__
+    await super().__call__(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/applications.py:112: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:187: in __call__
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:165: in __call__
+    await self.app(scope, receive, _send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/cors.py:85: in __call__
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/exceptions.py:62: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:714: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:734: in app
+    await route.handle(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:288: in handle
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:76: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:73: in app
+    response = await f(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:301: in app
+    raw_response = await run_endpoint_function(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:212: in run_endpoint_function
+    return await dependant.call(**values)
+backend.py:234: in login
+    user = authenticate_user(form_data.username, form_data.password)
+backend.py:191: in authenticate_user
+    user = get_user_by_email(email)
+backend.py:163: in get_user_by_email
+    user = db.users.find_one({"email": email})
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/collection.py:1328: in find_one
+    for result in cursor.limit(-1):
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1238: in next
+    if len(self.__data) or self._refresh():
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1130: in _refresh
+    self.__session = self.__collection.database.client._ensure_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1935: in _ensure_session
+    return self.__start_session(True, causal_consistency=False)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1883: in __start_session
+    server_session = self._get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1921: in _get_server_session
+    return self._topology.get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:520: in get_server_session
+    session_timeout = self._check_session_support()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:504: in _check_session_support
+    self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>>
+selector = <function readable_server_selector at 0x7fc02fa55440>, timeout = 30
+address = None
+
+    def _select_servers_loop(self, selector, timeout, address):
+        """select_servers() guts. Hold the lock when calling this."""
+        now = _time()
+        end_time = now + timeout
+        server_descriptions = self._description.apply_selector(
+            selector, address, custom_selector=self._settings.server_selector)
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+>               raise ServerSelectionTimeoutError(
+                    "%s, Timeout: %ss, Topology Description: %r" %
+                    (self._error_message(selector), timeout, self.description))
+E               pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:218: ServerSelectionTimeoutError
+______________________ ERROR at setup of test_list_items _______________________
+
+    @pytest.fixture(scope="session", autouse=True)
+    def setup_user():
+        global ACCESS_TOKEN
+        # Signup
+        # client.post(
+        #     "/api/auth/signup",
+        #     json={"name": TEST_NAME, "email": TEST_EMAIL, "password": TEST_PASSWORD}
+        # )
+        # Login
+>       response = client.post(
+            "/api/auth/login",
+            data={"username": TEST_EMAIL, "password": TEST_PASSWORD},
+            headers={"Content-Type": "application/x-www-form-urlencoded"}
+        )
+
+test_api.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:538: in post
+    return super().post(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1132: in post
+    return self.request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:437: in request
+    return super().request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:814: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:901: in send
+    response = self._send_handling_auth(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:929: in _send_handling_auth
+    response = self._send_handling_redirects(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:966: in _send_handling_redirects
+    response = self._send_single_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1002: in _send_single_request
+    response = transport.handle_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:340: in handle_request
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:337: in handle_request
+    portal.call(self.app, scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:290: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:221: in _call_func
+    retval = await retval_or_awaitable
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/applications.py:1054: in __call__
+    await super().__call__(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/applications.py:112: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:187: in __call__
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:165: in __call__
+    await self.app(scope, receive, _send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/cors.py:85: in __call__
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/exceptions.py:62: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:714: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:734: in app
+    await route.handle(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:288: in handle
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:76: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:73: in app
+    response = await f(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:301: in app
+    raw_response = await run_endpoint_function(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:212: in run_endpoint_function
+    return await dependant.call(**values)
+backend.py:234: in login
+    user = authenticate_user(form_data.username, form_data.password)
+backend.py:191: in authenticate_user
+    user = get_user_by_email(email)
+backend.py:163: in get_user_by_email
+    user = db.users.find_one({"email": email})
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/collection.py:1328: in find_one
+    for result in cursor.limit(-1):
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1238: in next
+    if len(self.__data) or self._refresh():
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1130: in _refresh
+    self.__session = self.__collection.database.client._ensure_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1935: in _ensure_session
+    return self.__start_session(True, causal_consistency=False)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1883: in __start_session
+    server_session = self._get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1921: in _get_server_session
+    return self._topology.get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:520: in get_server_session
+    session_timeout = self._check_session_support()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:504: in _check_session_support
+    self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>>
+selector = <function readable_server_selector at 0x7fc02fa55440>, timeout = 30
+address = None
+
+    def _select_servers_loop(self, selector, timeout, address):
+        """select_servers() guts. Hold the lock when calling this."""
+        now = _time()
+        end_time = now + timeout
+        server_descriptions = self._description.apply_selector(
+            selector, address, custom_selector=self._settings.server_selector)
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+>               raise ServerSelectionTimeoutError(
+                    "%s, Timeout: %ss, Topology Description: %r" %
+                    (self._error_message(selector), timeout, self.description))
+E               pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:218: ServerSelectionTimeoutError
+___________________ ERROR at setup of test_star_unstar_move ____________________
+
+    @pytest.fixture(scope="session", autouse=True)
+    def setup_user():
+        global ACCESS_TOKEN
+        # Signup
+        # client.post(
+        #     "/api/auth/signup",
+        #     json={"name": TEST_NAME, "email": TEST_EMAIL, "password": TEST_PASSWORD}
+        # )
+        # Login
+>       response = client.post(
+            "/api/auth/login",
+            data={"username": TEST_EMAIL, "password": TEST_PASSWORD},
+            headers={"Content-Type": "application/x-www-form-urlencoded"}
+        )
+
+test_api.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:538: in post
+    return super().post(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1132: in post
+    return self.request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:437: in request
+    return super().request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:814: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:901: in send
+    response = self._send_handling_auth(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:929: in _send_handling_auth
+    response = self._send_handling_redirects(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:966: in _send_handling_redirects
+    response = self._send_single_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1002: in _send_single_request
+    response = transport.handle_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:340: in handle_request
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:337: in handle_request
+    portal.call(self.app, scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:290: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:221: in _call_func
+    retval = await retval_or_awaitable
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/applications.py:1054: in __call__
+    await super().__call__(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/applications.py:112: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:187: in __call__
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:165: in __call__
+    await self.app(scope, receive, _send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/cors.py:85: in __call__
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/exceptions.py:62: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:714: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:734: in app
+    await route.handle(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:288: in handle
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:76: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:73: in app
+    response = await f(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:301: in app
+    raw_response = await run_endpoint_function(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:212: in run_endpoint_function
+    return await dependant.call(**values)
+backend.py:234: in login
+    user = authenticate_user(form_data.username, form_data.password)
+backend.py:191: in authenticate_user
+    user = get_user_by_email(email)
+backend.py:163: in get_user_by_email
+    user = db.users.find_one({"email": email})
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/collection.py:1328: in find_one
+    for result in cursor.limit(-1):
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1238: in next
+    if len(self.__data) or self._refresh():
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1130: in _refresh
+    self.__session = self.__collection.database.client._ensure_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1935: in _ensure_session
+    return self.__start_session(True, causal_consistency=False)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1883: in __start_session
+    server_session = self._get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1921: in _get_server_session
+    return self._topology.get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:520: in get_server_session
+    session_timeout = self._check_session_support()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:504: in _check_session_support
+    self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>>
+selector = <function readable_server_selector at 0x7fc02fa55440>, timeout = 30
+address = None
+
+    def _select_servers_loop(self, selector, timeout, address):
+        """select_servers() guts. Hold the lock when calling this."""
+        now = _time()
+        end_time = now + timeout
+        server_descriptions = self._description.apply_selector(
+            selector, address, custom_selector=self._settings.server_selector)
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+>               raise ServerSelectionTimeoutError(
+                    "%s, Timeout: %ss, Topology Description: %r" %
+                    (self._error_message(selector), timeout, self.description))
+E               pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:218: ServerSelectionTimeoutError
+___________________ ERROR at setup of test_decrypt_endpoint ____________________
+
+    @pytest.fixture(scope="session", autouse=True)
+    def setup_user():
+        global ACCESS_TOKEN
+        # Signup
+        # client.post(
+        #     "/api/auth/signup",
+        #     json={"name": TEST_NAME, "email": TEST_EMAIL, "password": TEST_PASSWORD}
+        # )
+        # Login
+>       response = client.post(
+            "/api/auth/login",
+            data={"username": TEST_EMAIL, "password": TEST_PASSWORD},
+            headers={"Content-Type": "application/x-www-form-urlencoded"}
+        )
+
+test_api.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:538: in post
+    return super().post(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1132: in post
+    return self.request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:437: in request
+    return super().request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:814: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:901: in send
+    response = self._send_handling_auth(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:929: in _send_handling_auth
+    response = self._send_handling_redirects(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:966: in _send_handling_redirects
+    response = self._send_single_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1002: in _send_single_request
+    response = transport.handle_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:340: in handle_request
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:337: in handle_request
+    portal.call(self.app, scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:290: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:221: in _call_func
+    retval = await retval_or_awaitable
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/applications.py:1054: in __call__
+    await super().__call__(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/applications.py:112: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:187: in __call__
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:165: in __call__
+    await self.app(scope, receive, _send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/cors.py:85: in __call__
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/exceptions.py:62: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:714: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:734: in app
+    await route.handle(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:288: in handle
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:76: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:73: in app
+    response = await f(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:301: in app
+    raw_response = await run_endpoint_function(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:212: in run_endpoint_function
+    return await dependant.call(**values)
+backend.py:234: in login
+    user = authenticate_user(form_data.username, form_data.password)
+backend.py:191: in authenticate_user
+    user = get_user_by_email(email)
+backend.py:163: in get_user_by_email
+    user = db.users.find_one({"email": email})
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/collection.py:1328: in find_one
+    for result in cursor.limit(-1):
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1238: in next
+    if len(self.__data) or self._refresh():
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1130: in _refresh
+    self.__session = self.__collection.database.client._ensure_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1935: in _ensure_session
+    return self.__start_session(True, causal_consistency=False)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1883: in __start_session
+    server_session = self._get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1921: in _get_server_session
+    return self._topology.get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:520: in get_server_session
+    session_timeout = self._check_session_support()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:504: in _check_session_support
+    self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>>
+selector = <function readable_server_selector at 0x7fc02fa55440>, timeout = 30
+address = None
+
+    def _select_servers_loop(self, selector, timeout, address):
+        """select_servers() guts. Hold the lock when calling this."""
+        now = _time()
+        end_time = now + timeout
+        server_descriptions = self._description.apply_selector(
+            selector, address, custom_selector=self._settings.server_selector)
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+>               raise ServerSelectionTimeoutError(
+                    "%s, Timeout: %ss, Topology Description: %r" %
+                    (self._error_message(selector), timeout, self.description))
+E               pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:218: ServerSelectionTimeoutError
+______________________ ERROR at setup of test_share_image ______________________
+
+    @pytest.fixture(scope="session", autouse=True)
+    def setup_user():
+        global ACCESS_TOKEN
+        # Signup
+        # client.post(
+        #     "/api/auth/signup",
+        #     json={"name": TEST_NAME, "email": TEST_EMAIL, "password": TEST_PASSWORD}
+        # )
+        # Login
+>       response = client.post(
+            "/api/auth/login",
+            data={"username": TEST_EMAIL, "password": TEST_PASSWORD},
+            headers={"Content-Type": "application/x-www-form-urlencoded"}
+        )
+
+test_api.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:538: in post
+    return super().post(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1132: in post
+    return self.request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:437: in request
+    return super().request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:814: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:901: in send
+    response = self._send_handling_auth(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:929: in _send_handling_auth
+    response = self._send_handling_redirects(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:966: in _send_handling_redirects
+    response = self._send_single_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1002: in _send_single_request
+    response = transport.handle_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:340: in handle_request
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:337: in handle_request
+    portal.call(self.app, scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:290: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:221: in _call_func
+    retval = await retval_or_awaitable
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/applications.py:1054: in __call__
+    await super().__call__(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/applications.py:112: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:187: in __call__
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:165: in __call__
+    await self.app(scope, receive, _send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/cors.py:85: in __call__
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/exceptions.py:62: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:714: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:734: in app
+    await route.handle(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:288: in handle
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:76: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:73: in app
+    response = await f(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:301: in app
+    raw_response = await run_endpoint_function(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:212: in run_endpoint_function
+    return await dependant.call(**values)
+backend.py:234: in login
+    user = authenticate_user(form_data.username, form_data.password)
+backend.py:191: in authenticate_user
+    user = get_user_by_email(email)
+backend.py:163: in get_user_by_email
+    user = db.users.find_one({"email": email})
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/collection.py:1328: in find_one
+    for result in cursor.limit(-1):
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1238: in next
+    if len(self.__data) or self._refresh():
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1130: in _refresh
+    self.__session = self.__collection.database.client._ensure_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1935: in _ensure_session
+    return self.__start_session(True, causal_consistency=False)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1883: in __start_session
+    server_session = self._get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1921: in _get_server_session
+    return self._topology.get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:520: in get_server_session
+    session_timeout = self._check_session_support()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:504: in _check_session_support
+    self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>>
+selector = <function readable_server_selector at 0x7fc02fa55440>, timeout = 30
+address = None
+
+    def _select_servers_loop(self, selector, timeout, address):
+        """select_servers() guts. Hold the lock when calling this."""
+        now = _time()
+        end_time = now + timeout
+        server_descriptions = self._description.apply_selector(
+            selector, address, custom_selector=self._settings.server_selector)
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+>               raise ServerSelectionTimeoutError(
+                    "%s, Timeout: %ss, Topology Description: %r" %
+                    (self._error_message(selector), timeout, self.description))
+E               pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:218: ServerSelectionTimeoutError
+__________________ ERROR at setup of test_list_starred_items ___________________
+
+    @pytest.fixture(scope="session", autouse=True)
+    def setup_user():
+        global ACCESS_TOKEN
+        # Signup
+        # client.post(
+        #     "/api/auth/signup",
+        #     json={"name": TEST_NAME, "email": TEST_EMAIL, "password": TEST_PASSWORD}
+        # )
+        # Login
+>       response = client.post(
+            "/api/auth/login",
+            data={"username": TEST_EMAIL, "password": TEST_PASSWORD},
+            headers={"Content-Type": "application/x-www-form-urlencoded"}
+        )
+
+test_api.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:538: in post
+    return super().post(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1132: in post
+    return self.request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:437: in request
+    return super().request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:814: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:901: in send
+    response = self._send_handling_auth(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:929: in _send_handling_auth
+    response = self._send_handling_redirects(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:966: in _send_handling_redirects
+    response = self._send_single_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1002: in _send_single_request
+    response = transport.handle_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:340: in handle_request
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:337: in handle_request
+    portal.call(self.app, scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:290: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:221: in _call_func
+    retval = await retval_or_awaitable
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/applications.py:1054: in __call__
+    await super().__call__(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/applications.py:112: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:187: in __call__
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:165: in __call__
+    await self.app(scope, receive, _send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/cors.py:85: in __call__
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/exceptions.py:62: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:714: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:734: in app
+    await route.handle(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:288: in handle
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:76: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:73: in app
+    response = await f(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:301: in app
+    raw_response = await run_endpoint_function(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:212: in run_endpoint_function
+    return await dependant.call(**values)
+backend.py:234: in login
+    user = authenticate_user(form_data.username, form_data.password)
+backend.py:191: in authenticate_user
+    user = get_user_by_email(email)
+backend.py:163: in get_user_by_email
+    user = db.users.find_one({"email": email})
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/collection.py:1328: in find_one
+    for result in cursor.limit(-1):
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1238: in next
+    if len(self.__data) or self._refresh():
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1130: in _refresh
+    self.__session = self.__collection.database.client._ensure_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1935: in _ensure_session
+    return self.__start_session(True, causal_consistency=False)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1883: in __start_session
+    server_session = self._get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1921: in _get_server_session
+    return self._topology.get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:520: in get_server_session
+    session_timeout = self._check_session_support()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:504: in _check_session_support
+    self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>>
+selector = <function readable_server_selector at 0x7fc02fa55440>, timeout = 30
+address = None
+
+    def _select_servers_loop(self, selector, timeout, address):
+        """select_servers() guts. Hold the lock when calling this."""
+        now = _time()
+        end_time = now + timeout
+        server_descriptions = self._description.apply_selector(
+            selector, address, custom_selector=self._settings.server_selector)
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+>               raise ServerSelectionTimeoutError(
+                    "%s, Timeout: %ss, Topology Description: %r" %
+                    (self._error_message(selector), timeout, self.description))
+E               pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:218: ServerSelectionTimeoutError
+___________________ ERROR at setup of test_list_recent_items ___________________
+
+    @pytest.fixture(scope="session", autouse=True)
+    def setup_user():
+        global ACCESS_TOKEN
+        # Signup
+        # client.post(
+        #     "/api/auth/signup",
+        #     json={"name": TEST_NAME, "email": TEST_EMAIL, "password": TEST_PASSWORD}
+        # )
+        # Login
+>       response = client.post(
+            "/api/auth/login",
+            data={"username": TEST_EMAIL, "password": TEST_PASSWORD},
+            headers={"Content-Type": "application/x-www-form-urlencoded"}
+        )
+
+test_api.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:538: in post
+    return super().post(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1132: in post
+    return self.request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:437: in request
+    return super().request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:814: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:901: in send
+    response = self._send_handling_auth(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:929: in _send_handling_auth
+    response = self._send_handling_redirects(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:966: in _send_handling_redirects
+    response = self._send_single_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1002: in _send_single_request
+    response = transport.handle_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:340: in handle_request
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:337: in handle_request
+    portal.call(self.app, scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:290: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:221: in _call_func
+    retval = await retval_or_awaitable
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/applications.py:1054: in __call__
+    await super().__call__(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/applications.py:112: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:187: in __call__
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:165: in __call__
+    await self.app(scope, receive, _send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/cors.py:85: in __call__
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/exceptions.py:62: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:714: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:734: in app
+    await route.handle(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:288: in handle
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:76: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:73: in app
+    response = await f(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:301: in app
+    raw_response = await run_endpoint_function(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:212: in run_endpoint_function
+    return await dependant.call(**values)
+backend.py:234: in login
+    user = authenticate_user(form_data.username, form_data.password)
+backend.py:191: in authenticate_user
+    user = get_user_by_email(email)
+backend.py:163: in get_user_by_email
+    user = db.users.find_one({"email": email})
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/collection.py:1328: in find_one
+    for result in cursor.limit(-1):
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1238: in next
+    if len(self.__data) or self._refresh():
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1130: in _refresh
+    self.__session = self.__collection.database.client._ensure_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1935: in _ensure_session
+    return self.__start_session(True, causal_consistency=False)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1883: in __start_session
+    server_session = self._get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1921: in _get_server_session
+    return self._topology.get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:520: in get_server_session
+    session_timeout = self._check_session_support()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:504: in _check_session_support
+    self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>>
+selector = <function readable_server_selector at 0x7fc02fa55440>, timeout = 30
+address = None
+
+    def _select_servers_loop(self, selector, timeout, address):
+        """select_servers() guts. Hold the lock when calling this."""
+        now = _time()
+        end_time = now + timeout
+        server_descriptions = self._description.apply_selector(
+            selector, address, custom_selector=self._settings.server_selector)
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+>               raise ServerSelectionTimeoutError(
+                    "%s, Timeout: %ss, Topology Description: %r" %
+                    (self._error_message(selector), timeout, self.description))
+E               pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:218: ServerSelectionTimeoutError
+___________________ ERROR at setup of test_list_shared_items ___________________
+
+    @pytest.fixture(scope="session", autouse=True)
+    def setup_user():
+        global ACCESS_TOKEN
+        # Signup
+        # client.post(
+        #     "/api/auth/signup",
+        #     json={"name": TEST_NAME, "email": TEST_EMAIL, "password": TEST_PASSWORD}
+        # )
+        # Login
+>       response = client.post(
+            "/api/auth/login",
+            data={"username": TEST_EMAIL, "password": TEST_PASSWORD},
+            headers={"Content-Type": "application/x-www-form-urlencoded"}
+        )
+
+test_api.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:538: in post
+    return super().post(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1132: in post
+    return self.request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:437: in request
+    return super().request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:814: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:901: in send
+    response = self._send_handling_auth(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:929: in _send_handling_auth
+    response = self._send_handling_redirects(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:966: in _send_handling_redirects
+    response = self._send_single_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1002: in _send_single_request
+    response = transport.handle_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:340: in handle_request
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:337: in handle_request
+    portal.call(self.app, scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:290: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:221: in _call_func
+    retval = await retval_or_awaitable
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/applications.py:1054: in __call__
+    await super().__call__(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/applications.py:112: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:187: in __call__
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:165: in __call__
+    await self.app(scope, receive, _send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/cors.py:85: in __call__
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/exceptions.py:62: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:714: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:734: in app
+    await route.handle(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:288: in handle
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:76: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:73: in app
+    response = await f(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:301: in app
+    raw_response = await run_endpoint_function(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:212: in run_endpoint_function
+    return await dependant.call(**values)
+backend.py:234: in login
+    user = authenticate_user(form_data.username, form_data.password)
+backend.py:191: in authenticate_user
+    user = get_user_by_email(email)
+backend.py:163: in get_user_by_email
+    user = db.users.find_one({"email": email})
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/collection.py:1328: in find_one
+    for result in cursor.limit(-1):
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1238: in next
+    if len(self.__data) or self._refresh():
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1130: in _refresh
+    self.__session = self.__collection.database.client._ensure_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1935: in _ensure_session
+    return self.__start_session(True, causal_consistency=False)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1883: in __start_session
+    server_session = self._get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1921: in _get_server_session
+    return self._topology.get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:520: in get_server_session
+    session_timeout = self._check_session_support()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:504: in _check_session_support
+    self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>>
+selector = <function readable_server_selector at 0x7fc02fa55440>, timeout = 30
+address = None
+
+    def _select_servers_loop(self, selector, timeout, address):
+        """select_servers() guts. Hold the lock when calling this."""
+        now = _time()
+        end_time = now + timeout
+        server_descriptions = self._description.apply_selector(
+            selector, address, custom_selector=self._settings.server_selector)
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+>               raise ServerSelectionTimeoutError(
+                    "%s, Timeout: %ss, Topology Description: %r" %
+                    (self._error_message(selector), timeout, self.description))
+E               pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:218: ServerSelectionTimeoutError
+_____________________ ERROR at setup of test_search_items ______________________
+
+    @pytest.fixture(scope="session", autouse=True)
+    def setup_user():
+        global ACCESS_TOKEN
+        # Signup
+        # client.post(
+        #     "/api/auth/signup",
+        #     json={"name": TEST_NAME, "email": TEST_EMAIL, "password": TEST_PASSWORD}
+        # )
+        # Login
+>       response = client.post(
+            "/api/auth/login",
+            data={"username": TEST_EMAIL, "password": TEST_PASSWORD},
+            headers={"Content-Type": "application/x-www-form-urlencoded"}
+        )
+
+test_api.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:538: in post
+    return super().post(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1132: in post
+    return self.request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:437: in request
+    return super().request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:814: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:901: in send
+    response = self._send_handling_auth(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:929: in _send_handling_auth
+    response = self._send_handling_redirects(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:966: in _send_handling_redirects
+    response = self._send_single_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1002: in _send_single_request
+    response = transport.handle_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:340: in handle_request
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:337: in handle_request
+    portal.call(self.app, scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:290: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:221: in _call_func
+    retval = await retval_or_awaitable
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/applications.py:1054: in __call__
+    await super().__call__(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/applications.py:112: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:187: in __call__
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:165: in __call__
+    await self.app(scope, receive, _send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/cors.py:85: in __call__
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/exceptions.py:62: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:714: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:734: in app
+    await route.handle(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:288: in handle
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:76: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:73: in app
+    response = await f(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:301: in app
+    raw_response = await run_endpoint_function(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:212: in run_endpoint_function
+    return await dependant.call(**values)
+backend.py:234: in login
+    user = authenticate_user(form_data.username, form_data.password)
+backend.py:191: in authenticate_user
+    user = get_user_by_email(email)
+backend.py:163: in get_user_by_email
+    user = db.users.find_one({"email": email})
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/collection.py:1328: in find_one
+    for result in cursor.limit(-1):
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1238: in next
+    if len(self.__data) or self._refresh():
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1130: in _refresh
+    self.__session = self.__collection.database.client._ensure_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1935: in _ensure_session
+    return self.__start_session(True, causal_consistency=False)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1883: in __start_session
+    server_session = self._get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1921: in _get_server_session
+    return self._topology.get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:520: in get_server_session
+    session_timeout = self._check_session_support()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:504: in _check_session_support
+    self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>>
+selector = <function readable_server_selector at 0x7fc02fa55440>, timeout = 30
+address = None
+
+    def _select_servers_loop(self, selector, timeout, address):
+        """select_servers() guts. Hold the lock when calling this."""
+        now = _time()
+        end_time = now + timeout
+        server_descriptions = self._description.apply_selector(
+            selector, address, custom_selector=self._settings.server_selector)
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+>               raise ServerSelectionTimeoutError(
+                    "%s, Timeout: %ss, Topology Description: %r" %
+                    (self._error_message(selector), timeout, self.description))
+E               pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:218: ServerSelectionTimeoutError
+________________________ ERROR at setup of test_preview ________________________
+
+    @pytest.fixture(scope="session", autouse=True)
+    def setup_user():
+        global ACCESS_TOKEN
+        # Signup
+        # client.post(
+        #     "/api/auth/signup",
+        #     json={"name": TEST_NAME, "email": TEST_EMAIL, "password": TEST_PASSWORD}
+        # )
+        # Login
+>       response = client.post(
+            "/api/auth/login",
+            data={"username": TEST_EMAIL, "password": TEST_PASSWORD},
+            headers={"Content-Type": "application/x-www-form-urlencoded"}
+        )
+
+test_api.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:538: in post
+    return super().post(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1132: in post
+    return self.request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:437: in request
+    return super().request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:814: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:901: in send
+    response = self._send_handling_auth(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:929: in _send_handling_auth
+    response = self._send_handling_redirects(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:966: in _send_handling_redirects
+    response = self._send_single_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1002: in _send_single_request
+    response = transport.handle_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:340: in handle_request
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:337: in handle_request
+    portal.call(self.app, scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:290: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:221: in _call_func
+    retval = await retval_or_awaitable
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/applications.py:1054: in __call__
+    await super().__call__(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/applications.py:112: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:187: in __call__
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:165: in __call__
+    await self.app(scope, receive, _send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/cors.py:85: in __call__
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/exceptions.py:62: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:714: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:734: in app
+    await route.handle(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:288: in handle
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:76: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:73: in app
+    response = await f(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:301: in app
+    raw_response = await run_endpoint_function(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:212: in run_endpoint_function
+    return await dependant.call(**values)
+backend.py:234: in login
+    user = authenticate_user(form_data.username, form_data.password)
+backend.py:191: in authenticate_user
+    user = get_user_by_email(email)
+backend.py:163: in get_user_by_email
+    user = db.users.find_one({"email": email})
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/collection.py:1328: in find_one
+    for result in cursor.limit(-1):
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1238: in next
+    if len(self.__data) or self._refresh():
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1130: in _refresh
+    self.__session = self.__collection.database.client._ensure_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1935: in _ensure_session
+    return self.__start_session(True, causal_consistency=False)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1883: in __start_session
+    server_session = self._get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1921: in _get_server_session
+    return self._topology.get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:520: in get_server_session
+    session_timeout = self._check_session_support()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:504: in _check_session_support
+    self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>>
+selector = <function readable_server_selector at 0x7fc02fa55440>, timeout = 30
+address = None
+
+    def _select_servers_loop(self, selector, timeout, address):
+        """select_servers() guts. Hold the lock when calling this."""
+        now = _time()
+        end_time = now + timeout
+        server_descriptions = self._description.apply_selector(
+            selector, address, custom_selector=self._settings.server_selector)
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+>               raise ServerSelectionTimeoutError(
+                    "%s, Timeout: %ss, Topology Description: %r" %
+                    (self._error_message(selector), timeout, self.description))
+E               pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:218: ServerSelectionTimeoutError
+_____________________ ERROR at setup of test_delete_folder _____________________
+
+    @pytest.fixture(scope="session", autouse=True)
+    def setup_user():
+        global ACCESS_TOKEN
+        # Signup
+        # client.post(
+        #     "/api/auth/signup",
+        #     json={"name": TEST_NAME, "email": TEST_EMAIL, "password": TEST_PASSWORD}
+        # )
+        # Login
+>       response = client.post(
+            "/api/auth/login",
+            data={"username": TEST_EMAIL, "password": TEST_PASSWORD},
+            headers={"Content-Type": "application/x-www-form-urlencoded"}
+        )
+
+test_api.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:538: in post
+    return super().post(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1132: in post
+    return self.request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:437: in request
+    return super().request(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:814: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:901: in send
+    response = self._send_handling_auth(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:929: in _send_handling_auth
+    response = self._send_handling_redirects(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:966: in _send_handling_redirects
+    response = self._send_single_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/httpx/_client.py:1002: in _send_single_request
+    response = transport.handle_request(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:340: in handle_request
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/testclient.py:337: in handle_request
+    portal.call(self.app, scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:290: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/anyio/from_thread.py:221: in _call_func
+    retval = await retval_or_awaitable
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/applications.py:1054: in __call__
+    await super().__call__(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/applications.py:112: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:187: in __call__
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:165: in __call__
+    await self.app(scope, receive, _send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/cors.py:85: in __call__
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/middleware/exceptions.py:62: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:714: in __call__
+    await self.middleware_stack(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:734: in app
+    await route.handle(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:288: in handle
+    await self.app(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:76: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/starlette/routing.py:73: in app
+    response = await f(request)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:301: in app
+    raw_response = await run_endpoint_function(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/fastapi/routing.py:212: in run_endpoint_function
+    return await dependant.call(**values)
+backend.py:234: in login
+    user = authenticate_user(form_data.username, form_data.password)
+backend.py:191: in authenticate_user
+    user = get_user_by_email(email)
+backend.py:163: in get_user_by_email
+    user = db.users.find_one({"email": email})
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/collection.py:1328: in find_one
+    for result in cursor.limit(-1):
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1238: in next
+    if len(self.__data) or self._refresh():
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/cursor.py:1130: in _refresh
+    self.__session = self.__collection.database.client._ensure_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1935: in _ensure_session
+    return self.__start_session(True, causal_consistency=False)
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1883: in __start_session
+    server_session = self._get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/mongo_client.py:1921: in _get_server_session
+    return self._topology.get_server_session()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:520: in get_server_session
+    session_timeout = self._check_session_support()
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:504: in _check_session_support
+    self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>>
+selector = <function readable_server_selector at 0x7fc02fa55440>, timeout = 30
+address = None
+
+    def _select_servers_loop(self, selector, timeout, address):
+        """select_servers() guts. Hold the lock when calling this."""
+        now = _time()
+        end_time = now + timeout
+        server_descriptions = self._description.apply_selector(
+            selector, address, custom_selector=self._settings.server_selector)
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+>               raise ServerSelectionTimeoutError(
+                    "%s, Timeout: %ss, Topology Description: %r" %
+                    (self._error_message(selector), timeout, self.description))
+E               pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/pymongo/topology.py:218: ServerSelectionTimeoutError
+=============================== warnings summary ===============================
+../../../../../opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/passlib/utils/__init__.py:854
+  /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/passlib/utils/__init__.py:854: DeprecationWarning: 'crypt' is deprecated and slated for removal in Python 3.13
+    from crypt import crypt as _crypt
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform linux, python 3.11.12-final-0 ----------
+Coverage XML written to file coverage.xml
+
+=========================== short test summary info ============================
+ERROR test_api.py::test_encrypt_endpoint - pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+ERROR test_api.py::test_create_folder - pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+ERROR test_api.py::test_list_folders - pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+ERROR test_api.py::test_list_items - pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+ERROR test_api.py::test_star_unstar_move - pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+ERROR test_api.py::test_decrypt_endpoint - pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+ERROR test_api.py::test_share_image - pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+ERROR test_api.py::test_list_starred_items - pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+ERROR test_api.py::test_list_recent_items - pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+ERROR test_api.py::test_list_shared_items - pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+ERROR test_api.py::test_search_items - pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+ERROR test_api.py::test_preview - pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+ERROR test_api.py::test_delete_folder - pymongo.errors.ServerSelectionTimeoutError: SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016),SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016), Timeout: 30s, Topology Description: <TopologyDescription id: 6833234ec0e6c980bc050361, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-00.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-01.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>, <ServerDescription ('ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('SSL handshake failed: ac-gay0g6i-shard-00-02.h7aiwa6.mongodb.net:27017: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1016)')>]>
+======================== 1 warning, 13 errors in 41.51s ========================
+Error: Process completed with exit code 1.
+0s
+0s
+0s
