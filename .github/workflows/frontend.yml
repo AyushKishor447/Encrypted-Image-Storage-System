@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/hosting'
     env:
-      NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+      # NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
     
     steps:
     - uses: actions/checkout@v3
