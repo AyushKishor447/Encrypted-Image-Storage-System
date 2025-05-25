@@ -12,3 +12,4 @@ python-dotenv==1.1.0
 python_jose==3.4.0
 scipy==1.15.3
 # sha3==0.2.1
+python-multipart==0.0.6
