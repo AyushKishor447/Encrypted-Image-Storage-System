@@ -11,6 +11,9 @@ from datetime import datetime, timedelta
 import uuid
 import shutil
 from typing import Optional
+from api.encrypt import encrypt_img
+from api.decrypt import decrypt_img
+from api.preview import generate_preview
 
 # Create a minimal FastAPI app for testing
 app = FastAPI()
@@ -46,23 +49,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         return {"email": email, "id": "test_user_id"}
     except jwt.JWTError:
         raise HTTPException(status_code=401, detail="Invalid credentials")
-
-# Mock encryption function
-def mock_encrypt_img(array):
-    # Simple mock encryption - just add 1 to each pixel
-    encrypted = array + 1
-    key = (1.0, 2.0, 3.0, 4.0, 5.0)  # Mock encryption key
-    return encrypted, key
-
-# Mock decryption function
-def mock_decrypt_img(encrypted_array, key):
-    # Simple mock decryption - subtract 1 from each pixel
-    return encrypted_array - 1
-
-# Mock preview generation
-def mock_generate_preview(array):
-    # Just return the array as is for preview
-    return array
 
 # Helper function to save numpy array as image
 def save_np_as_image(array, path, mode='TIFF'):
@@ -109,8 +95,8 @@ async def encrypt_endpoint(
     image = Image.open(temp_path)
     array = np.array(image)
     
-    # Encrypt
-    encrypted_array, key = mock_encrypt_img(array)
+    # Encrypt using actual encryption function
+    encrypted_array, key = encrypt_img(array)
     
     # Generate unique ID
     base = os.path.splitext(file.filename)[0]
@@ -123,7 +109,7 @@ async def encrypt_endpoint(
     
     save_encrypted_array(encrypted_array, npy_path)
     save_np_as_image(encrypted_array, enc_view_path)
-    save_np_as_image(mock_generate_preview(array), preview_path, mode='PNG')
+    save_np_as_image(generate_preview(array), preview_path, mode='PNG')
     
     # Clean up temp file
     os.remove(temp_path)
@@ -166,7 +152,7 @@ async def decrypt_endpoint(
         raise HTTPException(status_code=400, detail="Invalid key format")
     
     encrypted_array = load_encrypted_array(npy_path)
-    decrypted = mock_decrypt_img(encrypted_array, key_tuple)
+    decrypted = decrypt_img(encrypted_array, key_tuple)
     
     dec_path = os.path.join(TEST_DEC_DIR, f"{base}_decrypted.tiff")
     save_np_as_image(decrypted, dec_path)
