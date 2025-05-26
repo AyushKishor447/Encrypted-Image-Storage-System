@@ -21,12 +21,6 @@ TEST_ENC_DIR = os.path.join(TEST_DIR, "encrypted")
 TEST_PREVIEW_DIR = os.path.join(TEST_DIR, "preview")
 TEST_DEC_DIR = os.path.join(TEST_DIR, "decrypted")
 
-# Create test directories
-os.makedirs(TEST_DIR, exist_ok=True)
-os.makedirs(TEST_ENC_DIR, exist_ok=True)
-os.makedirs(TEST_PREVIEW_DIR, exist_ok=True)
-os.makedirs(TEST_DEC_DIR, exist_ok=True)
-
 # Test user configuration
 TEST_EMAIL = "testuser@example.com"
 TEST_PASSWORD = "testpassword123"
@@ -83,6 +77,13 @@ def save_encrypted_array(array, path):
 def load_encrypted_array(path):
     return np.load(path)
 
+def ensure_test_directories():
+    """Ensure all test directories exist"""
+    os.makedirs(TEST_DIR, exist_ok=True)
+    os.makedirs(TEST_ENC_DIR, exist_ok=True)
+    os.makedirs(TEST_PREVIEW_DIR, exist_ok=True)
+    os.makedirs(TEST_DEC_DIR, exist_ok=True)
+
 # Test endpoints
 @app.post("/api/auth/login")
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -96,6 +97,8 @@ async def encrypt_endpoint(
     file: UploadFile = File(...),
     current_user: dict = Depends(get_current_user)
 ):
+    ensure_test_directories()  # Ensure directories exist
+    
     # Save uploaded file temporarily
     temp_path = os.path.join(TEST_DIR, file.filename)
     contents = await file.read()
@@ -132,7 +135,7 @@ async def encrypt_endpoint(
         "encrypted_id": enc_id,
         "preview_image_path": f"/storage/preview/{enc_id}_preview.png",
         "encrypted_file_path": f"/storage/encrypted_view/{enc_id}.tiff",
-        "npy_path": npy_path  # Add the actual file path
+        "npy_path": npy_path
     }
 
 @app.post("/api/decrypt")
@@ -141,16 +144,18 @@ async def decrypt_endpoint(
     key: str = Form(...),
     current_user: dict = Depends(get_current_user)
 ):
+    ensure_test_directories()  # Ensure directories exist
+    
     # Use the same path construction as encryption
     base = os.path.splitext(filename)[0]
     enc_id = f"{base}_encrypted"
     npy_path = os.path.join(TEST_ENC_DIR, f"{enc_id}.npy")
     
-    print(f"Looking for encrypted file at: {npy_path}")  # Debug print
+    print(f"Looking for encrypted file at: {npy_path}")
     
     if not os.path.exists(npy_path):
-        print(f"File not found at path: {npy_path}")  # Debug print
-        print(f"Directory contents: {os.listdir(TEST_ENC_DIR)}")  # Debug print
+        print(f"File not found at path: {npy_path}")
+        print(f"Directory contents: {os.listdir(TEST_ENC_DIR)}")
         raise HTTPException(status_code=404, detail="Encrypted file not found")
     
     try:
@@ -195,6 +200,7 @@ def cleanup():
 @pytest.fixture(autouse=True)
 def setup_and_cleanup():
     """Setup before each test and cleanup after"""
+    ensure_test_directories()  # Ensure directories exist before each test
     setup_test_image()
     yield
     cleanup()
