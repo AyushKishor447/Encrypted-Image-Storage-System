@@ -9,6 +9,7 @@ on:
       - 'requirements.txt'
       - 'utils/**'
       - 'storage/**'
+      - 'test_api.py'
       - '.github/workflows/test.yml'
   pull_request:
     branches: [ hosting ]
@@ -19,6 +20,7 @@ on:
       - 'utils/**'
       - 'storage/**'
       - '.github/workflows/test.yml'
+      - 'test_api.py'
 
 # Required secrets:
 # - MONGO_URI: MongoDB connection string for testing
