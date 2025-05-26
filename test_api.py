@@ -163,7 +163,7 @@ async def decrypt_endpoint(
 client = TestClient(app)
 
 # Test data
-TEST_IMAGE_PATH = "test_image.tiff"
+TEST_IMAGE_PATH = "test_image.tif"
 ENCRYPTION_KEY = None
 ENCRYPTED_FILE_NAME = None
 ACCESS_TOKEN = None
