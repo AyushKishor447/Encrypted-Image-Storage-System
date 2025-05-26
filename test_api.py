@@ -131,7 +131,8 @@ async def encrypt_endpoint(
         "preview_id": f"{enc_id}_preview",
         "encrypted_id": enc_id,
         "preview_image_path": f"/storage/preview/{enc_id}_preview.png",
-        "encrypted_file_path": f"/storage/encrypted_view/{enc_id}.tiff"
+        "encrypted_file_path": f"/storage/encrypted_view/{enc_id}.tiff",
+        "npy_path": npy_path  # Add the actual file path
     }
 
 @app.post("/api/decrypt")
@@ -140,11 +141,16 @@ async def decrypt_endpoint(
     key: str = Form(...),
     current_user: dict = Depends(get_current_user)
 ):
+    # Use the same path construction as encryption
     base = os.path.splitext(filename)[0]
     enc_id = f"{base}_encrypted"
     npy_path = os.path.join(TEST_ENC_DIR, f"{enc_id}.npy")
     
+    print(f"Looking for encrypted file at: {npy_path}")  # Debug print
+    
     if not os.path.exists(npy_path):
+        print(f"File not found at path: {npy_path}")  # Debug print
+        print(f"Directory contents: {os.listdir(TEST_ENC_DIR)}")  # Debug print
         raise HTTPException(status_code=404, detail="Encrypted file not found")
     
     try:
@@ -226,20 +232,31 @@ def test_encrypt_endpoint():
     assert "encrypted_id" in data
     assert "preview_image_path" in data
     assert "encrypted_file_path" in data
+    assert "npy_path" in data
     
     # Store values for decryption test
     ENCRYPTION_KEY = data["encryption_key"]
     ENCRYPTED_FILE_NAME = data["encrypted_id"]
     
     # Verify files were created
-    assert os.path.exists(os.path.join(TEST_ENC_DIR, f"{ENCRYPTED_FILE_NAME}.npy"))
-    assert os.path.exists(os.path.join(TEST_ENC_DIR, f"{ENCRYPTED_FILE_NAME}.tiff"))
-    assert os.path.exists(os.path.join(TEST_PREVIEW_DIR, f"{ENCRYPTED_FILE_NAME}_preview.png"))
+    npy_path = os.path.join(TEST_ENC_DIR, f"{ENCRYPTED_FILE_NAME}.npy")
+    enc_view_path = os.path.join(TEST_ENC_DIR, f"{ENCRYPTED_FILE_NAME}.tiff")
+    preview_path = os.path.join(TEST_PREVIEW_DIR, f"{ENCRYPTED_FILE_NAME}_preview.png")
+    
+    assert os.path.exists(npy_path), f"NPY file not found at {npy_path}"
+    assert os.path.exists(enc_view_path), f"Encrypted view file not found at {enc_view_path}"
+    assert os.path.exists(preview_path), f"Preview file not found at {preview_path}"
 
 def test_decrypt_endpoint():
     """Test the decryption endpoint"""
     if not (ENCRYPTION_KEY and ENCRYPTED_FILE_NAME):
         pytest.skip("Encryption test did not run or failed")
+    
+    # Print debug information
+    print(f"Testing decryption with:")
+    print(f"ENCRYPTED_FILE_NAME: {ENCRYPTED_FILE_NAME}")
+    print(f"ENCRYPTION_KEY: {ENCRYPTION_KEY}")
+    print(f"TEST_ENC_DIR contents: {os.listdir(TEST_ENC_DIR)}")
     
     response = client.post(
         "/api/decrypt",
@@ -247,12 +264,12 @@ def test_decrypt_endpoint():
         headers={"Authorization": f"Bearer {ACCESS_TOKEN}"}
     )
     
-    assert response.status_code == 200
+    assert response.status_code == 200, f"Decryption failed with status {response.status_code}"
     assert response.headers["content-type"] == "image/tiff"
     
     # Verify decrypted file was created
     dec_path = os.path.join(TEST_DEC_DIR, f"{ENCRYPTED_FILE_NAME}_decrypted.tiff")
-    assert os.path.exists(dec_path)
+    assert os.path.exists(dec_path), f"Decrypted file not found at {dec_path}"
     
     # Verify decrypted image can be opened
     decrypted_image = Image.open(dec_path)
