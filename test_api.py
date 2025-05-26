@@ -3,11 +3,14 @@ import pytest
 import numpy as np
 from PIL import Image
 from fastapi.testclient import TestClient
-from fastapi import FastAPI, UploadFile, File, Form
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Depends
 from fastapi.responses import JSONResponse, FileResponse
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from jose import jwt
+from datetime import datetime, timedelta
 import uuid
 import shutil
-from datetime import datetime
+from typing import Optional
 
 # Create a minimal FastAPI app for testing
 app = FastAPI()
@@ -23,6 +26,32 @@ os.makedirs(TEST_DIR, exist_ok=True)
 os.makedirs(TEST_ENC_DIR, exist_ok=True)
 os.makedirs(TEST_PREVIEW_DIR, exist_ok=True)
 os.makedirs(TEST_DEC_DIR, exist_ok=True)
+
+# Test user configuration
+TEST_EMAIL = "testuser@example.com"
+TEST_PASSWORD = "testpassword123"
+SECRET_KEY = "test_secret_key"  # Only for testing
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+# Security setup
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None or email != TEST_EMAIL:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+        return {"email": email, "id": "test_user_id"}
+    except jwt.JWTError:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
 
 # Mock encryption function
 def mock_encrypt_img(array):
@@ -55,8 +84,18 @@ def load_encrypted_array(path):
     return np.load(path)
 
 # Test endpoints
+@app.post("/api/auth/login")
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    if form_data.username != TEST_EMAIL or form_data.password != TEST_PASSWORD:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    access_token = create_access_token(data={"sub": form_data.username})
+    return {"access_token": access_token, "token_type": "bearer"}
+
 @app.post("/api/encrypt", response_class=JSONResponse)
-async def encrypt_endpoint(file: UploadFile = File(...)):
+async def encrypt_endpoint(
+    file: UploadFile = File(...),
+    current_user: dict = Depends(get_current_user)
+):
     # Save uploaded file temporarily
     temp_path = os.path.join(TEST_DIR, file.filename)
     contents = await file.read()
@@ -96,20 +135,24 @@ async def encrypt_endpoint(file: UploadFile = File(...)):
     }
 
 @app.post("/api/decrypt")
-async def decrypt_endpoint(filename: str = Form(...), key: str = Form(...)):
+async def decrypt_endpoint(
+    filename: str = Form(...),
+    key: str = Form(...),
+    current_user: dict = Depends(get_current_user)
+):
     base = os.path.splitext(filename)[0]
     enc_id = f"{base}_encrypted"
     npy_path = os.path.join(TEST_ENC_DIR, f"{enc_id}.npy")
     
     if not os.path.exists(npy_path):
-        raise Exception("Encrypted file not found")
+        raise HTTPException(status_code=404, detail="Encrypted file not found")
     
     try:
         key_tuple = tuple(map(float, key.strip("()").split(",")))
         if len(key_tuple) != 5:
             raise ValueError()
     except:
-        raise Exception("Invalid key format")
+        raise HTTPException(status_code=400, detail="Invalid key format")
     
     encrypted_array = load_encrypted_array(npy_path)
     decrypted = mock_decrypt_img(encrypted_array, key_tuple)
@@ -126,6 +169,7 @@ client = TestClient(app)
 TEST_IMAGE_PATH = "test_image.tiff"
 ENCRYPTION_KEY = None
 ENCRYPTED_FILE_NAME = None
+ACCESS_TOKEN = None
 
 def setup_test_image():
     """Create a test image if it doesn't exist"""
@@ -149,6 +193,20 @@ def setup_and_cleanup():
     yield
     cleanup()
 
+@pytest.fixture(autouse=True)
+def setup_auth():
+    """Setup authentication"""
+    global ACCESS_TOKEN
+    
+    # Login to get access token
+    response = client.post(
+        "/api/auth/login",
+        data={"username": TEST_EMAIL, "password": TEST_PASSWORD},
+        headers={"Content-Type": "application/x-www-form-urlencoded"}
+    )
+    assert response.status_code == 200
+    ACCESS_TOKEN = response.json()["access_token"]
+
 def test_encrypt_endpoint():
     """Test the encryption endpoint"""
     global ENCRYPTION_KEY, ENCRYPTED_FILE_NAME
@@ -156,7 +214,8 @@ def test_encrypt_endpoint():
     with open(TEST_IMAGE_PATH, "rb") as f:
         response = client.post(
             "/api/encrypt",
-            files={"file": ("test_image.tiff", f, "image/TIFF")}
+            files={"file": ("test_image.tiff", f, "image/TIFF")},
+            headers={"Authorization": f"Bearer {ACCESS_TOKEN}"}
         )
     
     assert response.status_code == 200
@@ -184,7 +243,8 @@ def test_decrypt_endpoint():
     
     response = client.post(
         "/api/decrypt",
-        data={"filename": ENCRYPTED_FILE_NAME, "key": ENCRYPTION_KEY}
+        data={"filename": ENCRYPTED_FILE_NAME, "key": ENCRYPTION_KEY},
+        headers={"Authorization": f"Bearer {ACCESS_TOKEN}"}
     )
     
     assert response.status_code == 200
