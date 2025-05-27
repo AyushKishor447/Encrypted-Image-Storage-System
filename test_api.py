@@ -52,7 +52,8 @@ client = MongoClient(
     maxIdleTimeMS=30000,
     waitQueueTimeoutMS=5000,
     connectTimeoutMS=30000,
-    socketTimeoutMS=30000
+    socketTimeoutMS=30000,
+    ssl_cert_reqs='CERT_NONE'
 )
 db = client["ess_database"]
 
