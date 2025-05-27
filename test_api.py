@@ -37,7 +37,7 @@ SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-# MongoDB setup
+# MongoDB setup zad
 MONGO_URI = os.getenv("MONGO_URI")
 print(f"Using MongoDB URI: {MONGO_URI}")
 client = MongoClient(
