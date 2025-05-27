@@ -44,16 +44,13 @@ client = MongoClient(
     MONGO_URI,
     tls=True,
     tlsAllowInvalidCertificates=True,
-    serverSelectionTimeoutMS=30000,
+    serverSelectionTimeoutMS=5000,
     retryWrites=True,
     retryReads=True,
     maxPoolSize=50,
     minPoolSize=10,
     maxIdleTimeMS=30000,
-    waitQueueTimeoutMS=5000,
-    connectTimeoutMS=30000,
-    socketTimeoutMS=30000,
-    ssl_cert_reqs='CERT_NONE'
+    waitQueueTimeoutMS=5000
 )
 db = client["ess_database"]
 
