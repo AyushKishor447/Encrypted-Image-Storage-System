@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 def generate_preview(image):
-    n,m=image.shape
+    n,m,_=image.shape
     img=image
     img=cv2.GaussianBlur(img, (51, 51), 0)
     noise = np.random.normal(0, 1, img.shape).astype(np.uint8)

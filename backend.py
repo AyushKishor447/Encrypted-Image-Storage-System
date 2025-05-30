@@ -57,6 +57,7 @@ for folder in [TMP_UPLOAD, STORAGE_ENC_ARRAY, STORAGE_ENC_VIEW, STORAGE_PREVIEW,
 
 # === Authentication Setup ===
 SECRET_KEY = os.getenv("JWT_SECRET_KEY")  # Change this in production!
+# SECRET_KEY = "KsJUuzzzU7ZK0YeGognCcznGzEVjhe2wgkVtnp1eBkug+Cz3dfpQW8R8bvjtaVJtKq4pQqnef1zqxmsxd9w12g=="  # Change this in production!
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 

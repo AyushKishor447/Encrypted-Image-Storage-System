@@ -40,23 +40,48 @@ def New_map(input_seed, itr):
     
 
 def encrypt_img(img_matrix):
-    m, n = img_matrix.shape
-    keys = key(img_matrix)
-    x, y, init_pixel = New_map(keys, 500+m*n)
-    x = x[500:]
-    y = y[500:]
+    if len(img_matrix.shape) == 2:
+        m, n = img_matrix.shape
+        keys = key(img_matrix)
+        x, y, init_pixel = New_map(keys, 500+m*n)
+        x = x[500:]
+        y = y[500:]
     
-    X = np.argsort(x)
-    Y = []
-    for i in range(len(y)):
-        Y.append(math.floor(y[i]*10**10)%(256))
+        X = np.argsort(x)
+        Y = []
+        for i in range(len(y)):
+            Y.append(math.floor(y[i]*10**10)%(256))
 
-    P = img_matrix.reshape(m*n)
-    C = np.zeros_like(P)
-    C[0] = init_pixel
-    for i in range(1, m*n):
-        C[i] = P[X[i]] ^ Y[X[i]] ^ C[i-1]
-    C = C.reshape(m,n)
-    return C,keys
+        P = img_matrix.reshape(m*n)
+        C = np.zeros_like(P)
+        C[0] = init_pixel
+        for i in range(1, m*n):
+            C[i] = P[X[i]] ^ Y[X[i]] ^ C[i-1]
+        C = C.reshape(m,n)
+        return C,keys
+    elif len(img_matrix.shape) == 3:
+        m, n,d = img_matrix.shape
+        keys = key(img_matrix[0])
+        x, y, init_pixel = New_map(keys, 500+m*n)
+        x = x[500:]
+        y = y[500:]
+        C3=[]
+        X = np.argsort(x)
+        Y = []
+        for i in range(len(y)):
+            Y.append(math.floor(y[i]*10**10)%(256))
+
+        for i in range(d):
+            P = img_matrix[:,:,i].reshape(m*n)
+            C = np.zeros_like(P)
+            C[0] = init_pixel
+            for i in range(1, m*n):
+                C[i] = P[X[i]] ^ Y[X[i]] ^ C[i-1]
+            C = C.reshape(m,n)
+            C3.append(C)
+
+        C3=np.stack(C3,axis=2)
+        return C3,keys
+
 
 

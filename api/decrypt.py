@@ -40,17 +40,39 @@ def New_map(input_seed, itr):
     
 
 def decrypt_img(C,key):
-    m, n = C.shape
-    x, y, init_pixel = New_map(key, 500+m*n)
-    x = x[500:]
-    y = y[500:]
-    X = np.argsort(x)
-    Y = []
-    for i in range(len(y)):
-        Y.append(math.floor(y[i]*10**10)%(256))
-    C1 = C.reshape(m*n)
-    P1 = np.zeros_like(C1)
-    for i in range(m*n-1,0,-1):
-        P1[X[i]] = C1[i] ^ Y[X[i]] ^ C1[i-1]
-    P1 = P1.reshape(m,n)
-    return P1
+    if len(C.shape) == 2:
+        m, n = C.shape
+        x, y, init_pixel = New_map(key, 500+m*n)
+        x = x[500:]
+        y = y[500:]
+        X = np.argsort(x)
+        Y = []
+        for i in range(len(y)):
+           Y.append(math.floor(y[i]*10**10)%(256))
+        C1 = C.reshape(m*n)
+        P1 = np.zeros_like(C1)
+        for i in range(m*n-1,0,-1):
+            P1[X[i]] = C1[i] ^ Y[X[i]] ^ C1[i-1]
+        P1 = P1.reshape(m,n)
+        return P1
+    elif len(C.shape) == 3:
+        m, n, d = C.shape
+        x, y, init_pixel = New_map(key, 500+m*n)
+        x = x[500:]
+        y = y[500:]
+        X = np.argsort(x)
+        Y = []
+        P3=[]
+        for i in range(len(y)):
+            Y.append(math.floor(y[i]*10**10)%(256))
+        for i in range(d):
+            C1 = C[:,:,i].reshape(m*n)
+            P1 = np.zeros_like(C1)
+            for i in range(m*n-1,0,-1):
+                P1[X[i]] = C1[i] ^ Y[X[i]] ^ C1[i-1]
+            P1 = P1.reshape(m,n)
+            P3.append(P1)
+
+        P3=np.stack(P3,axis=2)
+        return P3
+            
