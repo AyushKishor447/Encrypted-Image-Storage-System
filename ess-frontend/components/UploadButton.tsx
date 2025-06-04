@@ -164,7 +164,7 @@ export function UploadButton({ onUploadComplete, currentFolder }: UploadButtonPr
                 }}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
               >
-                I've Saved the Key
+                I&apos;ve Saved the Key
               </button>
             </div>
           </div>
