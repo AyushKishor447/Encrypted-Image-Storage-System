@@ -1,4 +1,3 @@
-# ESS/Dockerfile
 FROM python:3.11-slim
 
 WORKDIR /app
@@ -16,4 +15,7 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["uvicorn", "backend:app", "--host", "0.0.0.0", "--port", "8000"]
+# Use environment variable for port if provided
+ENV PORT=8000
+
+CMD uvicorn backend:app --host 0.0.0.0 --port ${PORT} 
