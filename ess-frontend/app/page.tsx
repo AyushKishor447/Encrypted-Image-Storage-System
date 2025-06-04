@@ -229,13 +229,8 @@ export default function Home() {
               setSelectedImages([]);
             }}
           />
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-6">
             <h2 className="text-lg font-medium text-gray-900">{getViewTitle()}</h2>
-            <div className="flex items-center gap-4">
-              <button className="text-sm text-gray-600 hover:text-gray-900">
-                Last modified ▼
-              </button>
-            </div>
           </div>
 
           {isLoading ? (
