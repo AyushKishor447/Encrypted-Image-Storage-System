@@ -25,10 +25,14 @@ from utils.utils import save_encrypted_array, load_encrypted_array, save_np_as_i
 load_dotenv()
 app = FastAPI()
 
+# Get allowed origins from environment variable, default to localhost
+allowed_origins_str = os.getenv("FRONTEND_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000,http://16.170.254.53:3000")
+allowed_origins = [origin.strip() for origin in allowed_origins_str.split(",")]
+
 # Enable CORS for frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000","encrypted-image-storage-system.vercel.app"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
