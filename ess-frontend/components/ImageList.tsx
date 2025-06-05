@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import { ImageItem } from '@/lib/types';
-import { downloadEncrypted, downloadDecrypted, deleteImage } from '@/lib/api';
+import { downloadEncrypted, downloadDecrypted, deleteImage, API_BASE } from '@/lib/api';
 import { saveAs } from 'file-saver';
 import { Trash2 } from 'lucide-react';
+import ImageCard from './ImageCard';
 
 interface ImageListProps {
   images: ImageItem[];
@@ -63,7 +64,7 @@ export default function ImageList({ images, onDelete }: ImageListProps) {
               </td>
               <td className="px-6 py-4">
                 <img
-                  src={`http://localhost:8000${image.preview}`}
+                  src={`${API_BASE}${image.preview}`}
                   alt={image.name}
                   className="h-12 w-12 object-cover rounded"
                 />

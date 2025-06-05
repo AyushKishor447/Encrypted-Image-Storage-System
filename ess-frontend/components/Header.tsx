@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SearchBar } from './SearchBar';
 import { useRouter } from 'next/navigation';
+import { API_BASE } from '@/lib/api';
 
 interface HeaderProps {
   viewMode: 'grid' | 'list';
@@ -15,10 +16,12 @@ export function Header({ viewMode, onViewModeChange, onSearch, currentFolder, se
   const [userEmail, setUserEmail] = useState('');
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
       try {
-        const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:8000/api/users/me', {
+        const response = await fetch(`${API_BASE}/api/users/me`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -33,7 +36,7 @@ export function Header({ viewMode, onViewModeChange, onSearch, currentFolder, se
       }
     };
 
-    fetchUserInfo();
+    fetchUser();
   }, []);
 
   const handleLogout = () => {

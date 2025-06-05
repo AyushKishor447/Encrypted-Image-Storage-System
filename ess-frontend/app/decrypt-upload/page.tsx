@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { API_BASE } from '@/lib/api';
 
 export default function DecryptUploadPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -39,7 +40,7 @@ export default function DecryptUploadPage() {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('key', key);
-      const response = await fetch('http://localhost:8000/api/decrypt-upload', {
+      const response = await fetch(`${API_BASE}/api/decrypt-upload`, {
         method: 'POST',
         body: formData,
       });

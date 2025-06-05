@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { API_BASE } from '@/lib/api'; // Assuming API_BASE is exported from api.ts
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -22,7 +23,7 @@ export default function Login() {
       formData.append('username', email);
       formData.append('password', password);
 
-      const response = await fetch('http://localhost:8000/api/auth/login', {
+      const response = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         body: formData,
       });

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Star, Clock, FolderIcon, Plus, ChevronRight, ChevronDown, UserPlus, Trash2 } from 'lucide-react';
 import { Modal } from './Modal';
 import axios from 'axios';
+import { API_BASE } from '@/lib/api';
 
 interface Folder {
   id: string;
@@ -53,7 +54,7 @@ export function Sidebar({ currentFolder, onFolderSelect, onViewStarred, onViewRe
       setIsLoading(true);
       setError(null);
       console.log('About to fetch folders with token:', token);
-      const res = await axios.get('http://localhost:8000/api/folders', {
+      const res = await axios.get(`${API_BASE}/api/folders`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -92,7 +93,7 @@ export function Sidebar({ currentFolder, onFolderSelect, onViewStarred, onViewRe
         formData.append('parent_folder', currentFolder);
       }
 
-      const response = await fetch('http://localhost:8000/api/folders', {
+      const response = await fetch(`${API_BASE}/api/folders`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -129,7 +130,7 @@ export function Sidebar({ currentFolder, onFolderSelect, onViewStarred, onViewRe
     if (!token) return;
     setIsDeletingFolder(true);
     try {
-      await axios.delete(`http://localhost:8000/api/folders/${folderId}`, {
+      await axios.delete(`${API_BASE}/api/folders/${folderId}`, {
         headers: { 'Authorization': `Bearer ${token}` },
       });
       setFolderToDelete(null);

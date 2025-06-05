@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { API_BASE } from '@/lib/api';
 
 interface UploadedKey {
   filename: string;
@@ -34,7 +35,7 @@ export function UploadButton({ onUploadComplete, currentFolder }: UploadButtonPr
         formData.append('file', file);
         
         // Upload and encrypt the file
-        const response = await fetch('http://localhost:8000/api/encrypt', {
+        const response = await fetch(`${API_BASE}/api/encrypt`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -57,7 +58,7 @@ export function UploadButton({ onUploadComplete, currentFolder }: UploadButtonPr
           moveFormData.append('folder_id', currentFolder);
 
           const moveResponse = await fetch(
-            `http://localhost:8000/api/items/${result.preview_id}/move`,
+            `${API_BASE}/api/items/${result.preview_id}/move`,
             {
               method: 'POST',
               headers: {

@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { Sidebar } from '@/components/Sidebar';
 import { UploadButton } from '@/components/UploadButton';
-import { listImages } from '@/lib/api';
+import { listImages, API_BASE } from '@/lib/api';
 import { ImageItem } from '@/lib/types';
 import { SearchBar } from '@/components/SearchBar';
 import { Trash2, Share2 } from 'lucide-react';
@@ -45,18 +45,18 @@ export default function Home() {
     
     try {
       setIsLoading(true);
-      let url = 'http://localhost:8000/api/items';
+      let url = `${API_BASE}/api/items`;
       if (contentView === 'shared') {
-        url = 'http://localhost:8000/api/items?shared=true';
+        url = `${API_BASE}/api/items?shared=true`;
       } else if (searchQuery && contentView !== 'starred' && contentView !== 'recent') {
-        url = 'http://localhost:8000/api/search?query=' + encodeURIComponent(searchQuery);
+        url = `${API_BASE}/api/search?query=` + encodeURIComponent(searchQuery);
         if (contentView === 'folder' && currentFolder) {
           url += `&folder=${encodeURIComponent(currentFolder)}`;
         }
       } else if (contentView === 'starred') {
-        url = 'http://localhost:8000/api/items/starred';
+        url = `${API_BASE}/api/items/starred`;
       } else if (contentView === 'recent') {
-        url = 'http://localhost:8000/api/items/recent';
+        url = `${API_BASE}/api/items/recent`;
       } else if (contentView === 'folder' && currentFolder) {
         url += `?folder=${encodeURIComponent(currentFolder)}`;
       }
@@ -110,7 +110,7 @@ export default function Home() {
   const handleStarItem = async (itemId: string, isStarred: boolean) => {
     if (!token) return;
     try {
-      const response = await fetch(`http://localhost:8000/api/items/${itemId}/${isStarred ? 'unstar' : 'star'}`, {
+      const response = await fetch(`${API_BASE}/api/items/${itemId}/${isStarred ? 'unstar' : 'star'}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -147,7 +147,7 @@ export default function Home() {
     if (!token) return;
     setShowBulkDeleteConfirm(false);
     for (const id of selectedImages) {
-      await fetch(`http://localhost:8000/api/delete/${id}`, {
+      await fetch(`${API_BASE}/api/delete/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` },
       });

@@ -11,6 +11,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import axios from "axios";
+import { API_BASE } from '@/lib/api';
 
 export default function DriveView() {
   const [items, setItems] = useState([]);
@@ -24,7 +25,7 @@ export default function DriveView() {
     try {
       setIsLoading(true);
       const token = localStorage.getItem('token');
-      const res = await axios.get("http://localhost:8000/api/items", {
+      const res = await axios.get(`${API_BASE}/api/items`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -46,7 +47,7 @@ export default function DriveView() {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post("http://localhost:8000/api/encrypt", formData, {
+      await axios.post(`${API_BASE}/api/encrypt`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal } from './Modal';
 import axios from 'axios';
+import { API_BASE } from '@/lib/api';
 
 interface ShareDialogProps {
   isOpen: boolean;
@@ -24,7 +25,7 @@ export default function ShareDialog({ isOpen, onClose, imageIds, onShared }: Sha
     setError(null);
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:8000/api/share', {
+      await axios.post(`${API_BASE}/api/share`, {
         image_ids: imageIds,
         email,
       }, {

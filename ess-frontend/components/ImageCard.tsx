@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ImageItem } from '@/lib/types';
-import { downloadEncrypted, downloadDecrypted, deleteImage } from '@/lib/api';
+import { downloadEncrypted, downloadDecrypted, deleteImage, API_BASE } from '@/lib/api';
 import { saveAs } from 'file-saver';
 import { Trash2, Star, FolderIcon } from 'lucide-react';
 
@@ -139,7 +139,7 @@ export default function ImageCard({ item, onDelete, onStar, folders = [], select
         formData.append('folder_id', folderId);
       }
 
-      const response = await fetch(`http://localhost:8000/api/items/${item.id}/move`, {
+      const response = await fetch(`${API_BASE}/api/items/${item.id}/move`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -173,7 +173,7 @@ export default function ImageCard({ item, onDelete, onStar, folders = [], select
       )}
       <div className="aspect-square relative group">
         <img
-          src={`http://localhost:8000${item.preview}`}
+          src={`${API_BASE}${item.preview}`}
           alt={baseFilename}
           className="w-full h-full object-cover"
           onError={(e) => {

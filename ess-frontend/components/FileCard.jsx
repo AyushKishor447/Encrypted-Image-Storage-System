@@ -1,6 +1,10 @@
 // FileCard.jsx
+'use client';
 import React, { useState } from "react";
 import axios from "axios";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { API_BASE } from '@/lib/api'; // Import API_BASE
 
 export default function FileCard({ id, previewUrl }) {
   const [keyInput, setKeyInput] = useState("");
@@ -39,6 +43,16 @@ export default function FileCard({ id, previewUrl }) {
     if (!keyInput) return alert("Please enter the decryption key.");
   
     try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE}/api/decrypt`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ id: id }),
+      });
+
       // Get base name by stripping "_encrypted" from the ID
       const baseFilename = id.replace("_encrypted_preview", "");
   
@@ -47,7 +61,7 @@ export default function FileCard({ id, previewUrl }) {
       formData.append("key", keyInput);
   
       const decResp = await axios.post(
-        "http://localhost:8000/api/decrypt",
+        `${API_BASE}:8000/api/decrypt`,
         formData,
         { responseType: "blob" }
       );

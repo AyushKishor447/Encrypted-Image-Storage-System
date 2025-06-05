@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { API_BASE } from '@/lib/api';
 
 export default function Signup() {
   const [name, setName] = useState('');
@@ -26,7 +27,7 @@ export default function Signup() {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/api/auth/signup', {
+      const response = await fetch(`${API_BASE}/api/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
