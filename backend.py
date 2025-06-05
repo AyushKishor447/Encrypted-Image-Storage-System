@@ -42,7 +42,7 @@ STORAGE_PREVIEW_DIR = os.path.join(STORAGE_DIR, "preview")
 STORAGE_DECRYPTED_DIR = os.path.join(STORAGE_DIR, "decrypted")
 
 # Serve storage folders
-app.mount("/storage", StaticFiles(directory=STORAGE_DIR), name="storage")
+# app.mount("/storage", StaticFiles(directory=STORAGE_DIR), name="storage") # Commented out
 
 # Folder paths
 TMP_UPLOAD = os.path.join(BASE_DIR, "temp_uploads")
