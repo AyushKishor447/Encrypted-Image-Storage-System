@@ -106,52 +106,52 @@ class Folder(BaseModel):
     user_id: str
 
 # File to store metadata
-METADATA_FILE = "storage/metadata.json"
-IMAGE_FOLDERS_FILE = "storage/image_folders.json"
+# METADATA_FILE = "storage/metadata.json"
+# IMAGE_FOLDERS_FILE = "storage/image_folders.json"
 
-def load_metadata():
-    print("Loading metadata from:", METADATA_FILE)
-    if os.path.exists(METADATA_FILE):
-        try:
-            with open(METADATA_FILE, 'r') as f:
-                data = json.load(f)
-                print("Loaded metadata:", data)
-                # Ensure required fields exist
-                if not isinstance(data, dict):
-                    data = {}
-                if "starred" not in data:
-                    data["starred"] = []
-                if "folders" not in data:
-                    data["folders"] = []
-                return data
-        except (json.JSONDecodeError, IOError) as e:
-            print(f"Error loading metadata: {str(e)}")
-    return {"starred": [], "folders": []}
+# def load_metadata():
+#     print("Loading metadata from:", METADATA_FILE)
+#     if os.path.exists(METADATA_FILE):
+#         try:
+#             with open(METADATA_FILE, 'r') as f:
+#                 data = json.load(f)
+#                 print("Loaded metadata:", data)
+#                 # Ensure required fields exist
+#                 if not isinstance(data, dict):
+#                     data = {}
+#                 if "starred" not in data:
+#                     data["starred"] = []
+#                 if "folders" not in data:
+#                     data["folders"] = []
+#                 return data
+#         except (json.JSONDecodeError, IOError) as e:
+#             print(f"Error loading metadata: {str(e)}")
+#     return {"starred": [], "folders": []}
 
-def load_image_folders():
-    if os.path.exists(IMAGE_FOLDERS_FILE):
-        try:
-            with open(IMAGE_FOLDERS_FILE, 'r') as f:
-                return json.load(f)
-        except (json.JSONDecodeError, IOError):
-            pass
-    return {}
+# def load_image_folders():
+#     if os.path.exists(IMAGE_FOLDERS_FILE):
+#         try:
+#             with open(IMAGE_FOLDERS_FILE, 'r') as f:
+#                 return json.load(f)
+#         except (json.JSONDecodeError, IOError):
+#             pass
+#     return {}
 
-def save_image_folders(image_folders):
-    os.makedirs(os.path.dirname(IMAGE_FOLDERS_FILE), exist_ok=True)
-    with open(IMAGE_FOLDERS_FILE, 'w') as f:
-        json.dump(image_folders, f, indent=2)
+# def save_image_folders(image_folders):
+#     os.makedirs(os.path.dirname(IMAGE_FOLDERS_FILE), exist_ok=True)
+#     with open(IMAGE_FOLDERS_FILE, 'w') as f:
+#         json.dump(image_folders, f, indent=2)
 
-def save_metadata(metadata):
-    print("Saving metadata:", metadata)
-    os.makedirs(os.path.dirname(METADATA_FILE), exist_ok=True)
-    with open(METADATA_FILE, 'w') as f:
-        json.dump(metadata, f, indent=2)
-    print("Metadata saved successfully")
+# def save_metadata(metadata):
+#     print("Saving metadata:", metadata)
+#     os.makedirs(os.path.dirname(METADATA_FILE), exist_ok=True)
+#     with open(METADATA_FILE, 'w') as f:
+#         json.dump(metadata, f, indent=2)
+#     print("Metadata saved successfully")
 
 # Initialize metadata if it doesn't exist or is invalid
-metadata = load_metadata()
-save_metadata(metadata)
+# metadata = load_metadata()
+# save_metadata(metadata)
 
 # === User Management Functions ===
 
