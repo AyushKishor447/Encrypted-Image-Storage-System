@@ -41,7 +41,7 @@ export default function ImageCard({ item, onDelete, onStar, folders = [], select
     
     try {
       setIsDownloading(true);
-      const blob = await downloadEncrypted(item.name);
+      const blob = await downloadEncrypted(item.id);
       
       // Only try to save if we got a valid blob
       if (blob.size > 0) {

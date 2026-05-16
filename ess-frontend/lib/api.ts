@@ -74,15 +74,14 @@ export async function deleteImage(imageId: string): Promise<void> {
   }
 }
 
-export async function downloadEncrypted(filename: string): Promise<Blob> {
+export async function downloadEncrypted(itemId: string): Promise<Blob> {
   const token = localStorage.getItem('token');
   if (!token) {
     throw new Error('No authentication token found');
   }
 
-  const baseName = filename.split('.')[0];
-  const url = `${API_BASE}/api/encrypted/${baseName}_encrypted_preview`;
-  
+  const url = `${API_BASE}/api/encrypted/${itemId}`;
+
   console.log('Downloading encrypted file from:', url);
   const response = await fetch(url, {
     headers: {

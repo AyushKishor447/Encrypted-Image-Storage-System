@@ -10,18 +10,18 @@ import os
 import json
 from datetime import datetime, timedelta
 from typing import List, Optional
-# import jwt 
 from jose import jwt
 from passlib.context import CryptContext
 import uuid
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from bson import ObjectId
-# this is a change to test workflow dadadhkhkadaadasewewasnjjjjeeqeqeqeq
+
 from api.encrypt import encrypt_img
 from api.decrypt import decrypt_img
 from api.preview import generate_preview
 from utils.utils import save_encrypted_array, load_encrypted_array, save_np_as_image
+from io import BytesIO
 load_dotenv()
 app = FastAPI()
 
@@ -34,7 +34,6 @@ app.add_middleware(
     CORSMiddleware,
     # allow_origins=allowed_origins,
     allow_origins=["*"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -61,8 +60,8 @@ for folder in [TMP_UPLOAD, STORAGE_ENC_ARRAY, STORAGE_ENC_VIEW, STORAGE_PREVIEW,
     os.makedirs(folder, exist_ok=True)
 
 # === Authentication Setup ===
-SECRET_KEY = os.getenv("JWT_SECRET_KEY")  # Change this in production!
-# SECRET_KEY = "KsJUuzzzU7ZK0YeGognCcznGzEVjhe2wgkVtnp1eBkug+Cz3dfpQW8R8bvjtaVJtKq4pQqnef1zqxmsxd9w12g=="  # Change this in production!
+SECRET_KEY = os.getenv("JWT_SECRET_KEY")  
+# SECRET_KEY = "KsJUuzzzU7ZK0YeGognCcznGzEVjhe2wgkVtnp1eBkug+Cz3dfpQW8R8bvjtaVJtKq4pQqnef1zqxmsxd9w12g=="  
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -96,7 +95,7 @@ class Item(BaseModel):
     name: str
     type: str
     preview: str
-    path: str
+    path: Optional[str] = None
     starred: bool = False
     last_modified: str
     parent_folder: Optional[str] = None
@@ -333,202 +332,127 @@ async def delete_folder(folder_id: str, current_user: dict = Depends(get_current
 # === ENCRYPTION ===
 @app.post("/api/encrypt", response_class=JSONResponse)
 async def encrypt_endpoint(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
-    print(f"Starting encryption for file: {file.filename}")
-    temp_path = os.path.join(TMP_UPLOAD, file.filename)
-    contents = await file.read()
-    with open(temp_path, "wb") as f:
-        f.write(contents)
-    print(f"Saved temporary file to: {temp_path}")
-
-    image = Image.open(temp_path)
-    array = np.array(image)
-    print(f"Loaded image array with shape: {array.shape}")
-
-    encrypted_array, key = encrypt_img(array)
-    base = os.path.splitext(file.filename)[0]
-    enc_id = f"{base}_encrypted"
-
-    npy_path = os.path.join(STORAGE_ENC_ARRAY, f"{enc_id}.npy")
-    enc_view_path = os.path.join(STORAGE_ENC_VIEW, f"{enc_id}.tiff")
-    preview_path = os.path.join(STORAGE_PREVIEW, f"{enc_id}_preview.png")
-
-    print(f"Saving files to:")
-    print(f"- NPY: {npy_path}")
-    print(f"- Encrypted view: {enc_view_path}")
-    print(f"- Preview: {preview_path}")
-
-    save_encrypted_array(encrypted_array, npy_path)
-    save_np_as_image(encrypted_array, enc_view_path)
-    save_np_as_image(generate_preview(array), preview_path, mode='PNG')
-
-    # Verify files were created
-    for path in [npy_path, enc_view_path, preview_path]:
-        if os.path.exists(path):
-            print(f"✅ File exists: {path}")
-        else:
-            print(f"❌ File missing: {path}")
-
-    # Insert image metadata into MongoDB
-    image_doc = {
-        "id": f"{enc_id}_preview",
-        "name": file.filename,
-        "type": "file",
-        "preview": f"/api/preview/{enc_id}_preview",
-        "path": f"/storage/preview/{enc_id}_preview.png",
-        "encrypted_path": f"/storage/encrypted_view/{enc_id}.tiff",
-        "starred": False,
-        "last_modified": datetime.now().isoformat(),
-        "parent_folder": None,
-        "user_id": current_user["id"]
-    }
-    db.images.insert_one(image_doc)
-    print(f"✅ Saved image metadata to MongoDB: {image_doc}")
-
-    return {
-        "message": "✅ Encryption successful",
-        "encryption_key": str(key),
-        "preview_id": f"{enc_id}_preview",
-        "encrypted_id": enc_id,
-        "preview_image_path": f"/storage/preview/{enc_id}_preview.png",
-        "encrypted_file_path": f"/storage/encrypted_view/{enc_id}.tiff",
-        "user_id": current_user["id"]
-    }
+    try:
+        # Read the uploaded file
+        contents = await file.read()
+        image = Image.open(BytesIO(contents))
+        img_array = np.array(image)
+        
+        # Generate a unique ID for this image
+        image_id = str(uuid.uuid4())
+        
+        # Encrypt the image
+        encrypted_array, key = encrypt_img(img_array)
+        
+        # Save encrypted array
+        encrypted_path = os.path.join(STORAGE_ENC_ARRAY, f"{image_id}.npy")
+        save_encrypted_array(encrypted_array, encrypted_path)
+        
+        # Save encrypted view
+        encrypted_view_path = os.path.join(STORAGE_ENC_VIEW, f"{image_id}.tiff")
+        save_np_as_image(encrypted_array, encrypted_view_path)
+        
+        # Generate and save preview
+        preview_array = generate_preview(img_array)
+        preview_path = os.path.join(STORAGE_PREVIEW, f"{image_id}.png")
+        save_np_as_image(preview_array, preview_path)
+        
+        # Store metadata in MongoDB
+        image_doc = {
+            "id": image_id,
+            "name": file.filename,
+            "type": "image/tiff",
+            "preview_path": preview_path,
+            "encrypted_path": encrypted_view_path,
+            "encrypted_array_path": encrypted_path,
+            "starred": False,
+            "last_modified": datetime.now().isoformat(),
+            "user_id": current_user["id"]
+        }
+        
+        db.images.insert_one(image_doc)
+        
+        return {
+            "id": image_id,
+            "name": file.filename,
+            "preview": f"/api/preview/{image_id}",
+            "encrypted": f"/api/encrypted/{image_id}",
+            "encryption_key": str(key)
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 # === DECRYPTION ===
 @app.post("/api/decrypt")
 async def decrypt_endpoint(filename: str = Form(...), key: str = Form(...)):
-    base = os.path.splitext(filename)[0]
-    enc_id = f"{base}_encrypted"
-    npy_path = os.path.join(STORAGE_ENC_ARRAY, f"{enc_id}.npy")
-
-    if not os.path.exists(npy_path):
-        raise HTTPException(status_code=404, detail="Encrypted file not found")
-
     try:
-        key_tuple = tuple(map(float, key.strip("()").split(",")))
-        if len(key_tuple) != 5:
-            raise ValueError()
-    except:
-        raise HTTPException(status_code=400, detail="Invalid key format")
-
-    encrypted_array = load_encrypted_array(npy_path)
-    decrypted = decrypt_img(encrypted_array, key_tuple)
-
-    dec_path = os.path.join(STORAGE_DECRYPTED, f"{base}_decrypted.tiff")
-    save_np_as_image(decrypted, dec_path)
-
-    return FileResponse(dec_path, media_type="image/tiff", filename=os.path.basename(dec_path))
-
-# === MODIFIED LIST ITEMS ENDPOINT ===
-@app.get("/api/items", response_model=list[Item])
-def list_items(
-    folder: Optional[str] = None,
-    shared: Optional[bool] = False,
-    current_user: dict = Depends(get_current_user)
-):
-    if shared:
-        # Find all image_ids shared with this user
-        shared_records = list(db.shared_images.find({"shared_with_email": current_user["email"]}))
-        if not shared_records:
-            return []  # No shared images, return empty list
-        shared_image_ids = [rec["image_id"] for rec in shared_records]
-        query = {"id": {"$in": shared_image_ids}}
-        if folder is not None:
-            query["parent_folder"] = folder
-        items = list(db.images.find(query, {"_id": 0}))
-    else:
-        query = {"user_id": current_user["id"]}
-        if folder is not None:
-            query["parent_folder"] = folder
-        items = list(db.images.find(query, {"_id": 0}))
-    items.sort(key=lambda x: x["last_modified"], reverse=True)
-    return items
-
-@app.get("/api/items/starred")
-def list_starred_items(current_user: dict = Depends(get_current_user)):
-    items = list(db.images.find({"user_id": current_user["id"], "starred": True}, {"_id": 0}))
-    items.sort(key=lambda x: x["last_modified"], reverse=True)
-    return items
-
-@app.get("/api/items/recent")
-def list_recent_items(limit: int = 5, current_user: dict = Depends(get_current_user)):
-    items = list(db.images.find({"user_id": current_user["id"]}, {"_id": 0}))
-    items.sort(key=lambda x: x["last_modified"], reverse=True)
-    return items[:limit]
-
-@app.post("/api/items/{item_id}/star")
-async def star_item(item_id: str, current_user: dict = Depends(get_current_user)):
-    result = db.images.update_one({"id": item_id, "user_id": current_user["id"]}, {"$set": {"starred": True}})
-    if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Image not found")
-    return {"status": "success"}
-
-@app.post("/api/items/{item_id}/unstar")
-async def unstar_item(item_id: str, current_user: dict = Depends(get_current_user)):
-    result = db.images.update_one({"id": item_id, "user_id": current_user["id"]}, {"$set": {"starred": False}})
-    if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Image not found")
-    return {"status": "success"}
-
-@app.post("/api/items/{item_id}/move")
-async def move_item(item_id: str, folder_id: Optional[str] = Form(None), current_user: dict = Depends(get_current_user)):
-    update = {"parent_folder": folder_id} if folder_id else {"parent_folder": None}
-    result = db.images.update_one({"id": item_id, "user_id": current_user["id"]}, {"$set": update})
-    if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Image not found")
-    return {"status": "success"}
-
-@app.get("/api/search")
-def search_items(query: str, folder: Optional[str] = None, current_user: dict = Depends(get_current_user)):
-    search_query = {"user_id": current_user["id"], "name": {"$regex": query, "$options": "i"}}
-    if folder is not None:
-        search_query["parent_folder"] = folder
-    items = list(db.images.find(search_query, {"_id": 0}))
-    items.sort(key=lambda x: x["last_modified"], reverse=True)
-    return items
+        # Find the image document in MongoDB
+        image_doc = db.images.find_one({"name": filename})
+        if not image_doc:
+            raise HTTPException(status_code=404, detail="Image not found")
+        
+        # Load encrypted array from file
+        encrypted_array = load_encrypted_array(image_doc["encrypted_array_path"])
+        
+        # Parse the key
+        try:
+            key_tuple = tuple(map(float, key.strip("() ").split(",")))
+            if len(key_tuple) != 5:
+                raise ValueError()
+        except:
+            raise HTTPException(status_code=400, detail="Invalid key format")
+        
+        # Decrypt
+        decrypted = decrypt_img(encrypted_array, key_tuple)
+        
+        # Save decrypted image
+        decrypted_path = os.path.join(STORAGE_DECRYPTED, f"{filename}_decrypted.tiff")
+        save_np_as_image(decrypted, decrypted_path)
+        
+        return FileResponse(
+            decrypted_path,
+            media_type="image/tiff",
+            filename=f"{filename}_decrypted.tiff"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 # === PREVIEW ENDPOINT ===
 @app.get("/api/preview/{item_id}")
-def get_preview(item_id: str):
-    path = os.path.join(STORAGE_PREVIEW, f"{item_id}.png")
-    if not os.path.exists(path):
-        raise HTTPException(status_code=404, detail="Preview not found")
-    return FileResponse(path, media_type="image/png")
+async def get_preview(item_id: str):
+    try:
+        image_doc = db.images.find_one({"id": item_id})
+        if not image_doc:
+            raise HTTPException(status_code=404, detail="Image not found")
+
+        preview_path = os.path.join(STORAGE_PREVIEW, f"{item_id}.png")
+        if not os.path.exists(preview_path):
+            raise HTTPException(status_code=404, detail="Preview file not found on disk")
+
+        return FileResponse(preview_path, media_type="image/png")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 # === ENCRYPTED FILE ENDPOINT ===
 @app.get("/api/encrypted/{item_id}")
 async def get_encrypted_file(item_id: str, current_user: dict = Depends(get_current_user)):
     try:
-        print(f"Looking for image with ID: {item_id}")
-        # Find the image document in MongoDB
         image_doc = db.images.find_one({"id": item_id, "user_id": current_user["id"]})
         if not image_doc:
-            print(f"Image not found in database: {item_id}")
-            raise HTTPException(status_code=404, detail="Image not found in database")
-        
-        # Get the encrypted file path from the document
-        if "encrypted_path" not in image_doc:
-            print(f"Image document missing encrypted_path: {image_doc}")
-            raise HTTPException(status_code=404, detail="Image document missing encrypted path")
-        
-        # Convert the stored path to a filesystem path
-        enc_path = os.path.join(BASE_DIR, image_doc["encrypted_path"].lstrip('/'))
-        print(f"Looking for encrypted file at: {enc_path}")
-        
-        if not os.path.exists(enc_path):
-            print(f"File not found at path: {enc_path}")
+            raise HTTPException(status_code=404, detail="Image not found")
+
+        encrypted_path = os.path.join(STORAGE_ENC_VIEW, f"{item_id}.tiff")
+        if not os.path.exists(encrypted_path):
             raise HTTPException(status_code=404, detail="Encrypted file not found on disk")
-        
-        print(f"Found encrypted file, sending response")
-        return FileResponse(
-            enc_path,
-            media_type="image/tiff",
-            filename=os.path.basename(enc_path),
-            headers={"Content-Disposition": f"attachment; filename={os.path.basename(enc_path)}"}
-        )
+
+        return FileResponse(encrypted_path, media_type="image/tiff")
+    except HTTPException:
+        raise
     except Exception as e:
-        print(f"Error serving encrypted file: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Error serving encrypted file: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 # === DELETE ENDPOINT ===
 @app.delete("/api/delete/{image_id}")
@@ -612,3 +536,82 @@ async def share_images(
         if not db.shared_images.find_one({"image_id": image_id, "shared_with_email": email}):
             db.shared_images.insert_one({"image_id": image_id, "shared_with_email": email})
     return {"status": "success", "shared": len(image_ids), "email": email}
+
+@app.get("/api/items", response_model=list[Item])
+def list_items(
+    folder: Optional[str] = None,
+    shared: Optional[bool] = False,
+    current_user: dict = Depends(get_current_user)
+):
+    query = {"user_id": current_user["id"]}
+    if folder is not None:
+        query["parent_folder"] = folder
+    else:
+        query["parent_folder"] = {"$exists": False}  # Only top-level items if folder is None
+
+    if shared:
+        # For shared items, we need to check the shared_images collection
+        shared_image_ids = [s["image_id"] for s in db.shared_images.find({"shared_with_email": current_user["email"]})]
+        query["id"] = {"$in": shared_image_ids}
+
+    # Fetch items from MongoDB
+    items = list(db.images.find(query))
+    
+    # Transform item documents to match the Item Pydantic model
+    transformed_items = []
+    for item_doc in items:
+        transformed_items.append({
+            "id": item_doc["id"],
+            "name": item_doc["name"],
+            "type": item_doc["type"],
+            "preview": f"/api/preview/{item_doc['id']}",
+            "encrypted": f"/api/encrypted/{item_doc['id']}",
+            "starred": item_doc["starred"],
+            "last_modified": item_doc["last_modified"],
+            "parent_folder": item_doc.get("parent_folder"),
+            "user_id": item_doc["user_id"]
+        })
+    return transformed_items
+
+@app.get("/api/items/starred")
+def list_starred_items(current_user: dict = Depends(get_current_user)):
+    items = list(db.images.find({"user_id": current_user["id"], "starred": True}, {"_id": 0}))
+    items.sort(key=lambda x: x["last_modified"], reverse=True)
+    return items
+
+@app.get("/api/items/recent")
+def list_recent_items(limit: int = 5, current_user: dict = Depends(get_current_user)):
+    items = list(db.images.find({"user_id": current_user["id"]}, {"_id": 0}))
+    items.sort(key=lambda x: x["last_modified"], reverse=True)
+    return items[:limit]
+
+@app.post("/api/items/{item_id}/star")
+async def star_item(item_id: str, current_user: dict = Depends(get_current_user)):
+    result = db.images.update_one({"id": item_id, "user_id": current_user["id"]}, {"$set": {"starred": True}})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Image not found")
+    return {"status": "success"}
+
+@app.post("/api/items/{item_id}/unstar")
+async def unstar_item(item_id: str, current_user: dict = Depends(get_current_user)):
+    result = db.images.update_one({"id": item_id, "user_id": current_user["id"]}, {"$set": {"starred": False}})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Image not found")
+    return {"status": "success"}
+
+@app.post("/api/items/{item_id}/move")
+async def move_item(item_id: str, folder_id: Optional[str] = Form(None), current_user: dict = Depends(get_current_user)):
+    update = {"parent_folder": folder_id} if folder_id else {"parent_folder": None}
+    result = db.images.update_one({"id": item_id, "user_id": current_user["id"]}, {"$set": update})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Image not found")
+    return {"status": "success"}
+
+@app.get("/api/search")
+def search_items(query: str, folder: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+    search_query = {"user_id": current_user["id"], "name": {"$regex": query, "$options": "i"}}
+    if folder is not None:
+        search_query["parent_folder"] = folder
+    items = list(db.images.find(search_query, {"_id": 0}))
+    items.sort(key=lambda x: x["last_modified"], reverse=True)
+    return items
