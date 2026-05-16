@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Install system dependencies required for OpenCV and other packages
 RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx \
+    libgl1 \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
@@ -17,5 +17,5 @@ COPY . .
 EXPOSE 8000
 
 # CMD ["uvicorn", "backend:app", "--host", "0.0.0.0", "--port", "8000"]
-CMD ["gunicorn", "backend:app", "-k", "uvicorn.workers.UvicornWorker", "--workers", "5", "--bind", "0.0.0.0:8000"]
+CMD ["uvicorn", "backend:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
 

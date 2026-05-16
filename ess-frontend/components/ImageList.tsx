@@ -18,7 +18,7 @@ export default function ImageList({ images, onDelete }: ImageListProps) {
 
   const handleEncryptedDownload = async (item: ImageItem) => {
     try {
-      const blob = await downloadEncrypted(item.name);
+      const blob = await downloadEncrypted(item.id);
       saveAs(blob, `${item.name}_encrypted.tiff`);
     } catch (error) {
       console.error('Download failed:', error);
