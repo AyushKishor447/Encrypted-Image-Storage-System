@@ -355,7 +355,7 @@ async def encrypt_endpoint(file: UploadFile = File(...), current_user: dict = De
         # Generate and save preview
         preview_array = generate_preview(img_array)
         preview_path = os.path.join(STORAGE_PREVIEW, f"{image_id}.png")
-        save_np_as_image(preview_array, preview_path)
+        save_np_as_image(preview_array, preview_path, mode="PNG")
         
         # Store metadata in MongoDB
         image_doc = {
@@ -547,7 +547,7 @@ def list_items(
     if folder is not None:
         query["parent_folder"] = folder
     else:
-        query["parent_folder"] = {"$exists": False}  # Only top-level items if folder is None
+        query["$or"] = [{"parent_folder": {"$exists": False}}, {"parent_folder": None}]
 
     if shared:
         # For shared items, we need to check the shared_images collection
