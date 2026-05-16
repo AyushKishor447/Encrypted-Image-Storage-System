@@ -81,9 +81,25 @@ export default function Home() {
     }
   };
 
+  const loadFolders = async () => {
+    if (!token) return;
+    try {
+      const response = await fetch(`${API_BASE}/api/folders`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setFolders(data);
+      }
+    } catch (error) {
+      console.error('Failed to load folders:', error);
+    }
+  };
+
   useEffect(() => {
     if (token) {
       loadImages();
+      loadFolders();
     }
   }, [token, contentView, currentFolder, searchQuery]);
 

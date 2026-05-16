@@ -58,7 +58,7 @@ export function UploadButton({ onUploadComplete, currentFolder }: UploadButtonPr
           moveFormData.append('folder_id', currentFolder);
 
           const moveResponse = await fetch(
-            `${API_BASE}/api/items/${result.preview_id}/move`,
+            `${API_BASE}/api/items/${result.id}/move`,
             {
               method: 'POST',
               headers: {
